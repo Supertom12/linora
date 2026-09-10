@@ -1938,7 +1938,7 @@ do
         end
 
         Toggle:Display();
-        Groupbox:AddBlank(Info.BlankSize or 5 + 2);
+        Groupbox:AddBlank(Info.BlankSize or 5);
         Groupbox:Resize();
 
         Toggle.TextLabel = ToggleLabel;
@@ -2140,7 +2140,7 @@ do
         end);
 
         Slider:Display();
-        Groupbox:AddBlank(Info.BlankSize or 6);
+        Groupbox:AddBlank(Info.BlankSize or 5);
         Groupbox:Resize();
 
         Options[Idx] = Slider;
@@ -3189,7 +3189,7 @@ function Library:CreateWindow(...)
                 BackgroundColor3 = Library.BackgroundColor;
                 BorderColor3 = Library.OutlineColor;
                 BorderMode = Enum.BorderMode.Inset;
-                Size = UDim2.new(1, 0, 0, 507 + 2);
+                Size = UDim2.new(1, 0, 0, 20);
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
@@ -3264,7 +3264,6 @@ function Library:CreateWindow(...)
             Groupbox.Container = Container;
             setmetatable(Groupbox, BaseGroupbox);
 
-            Groupbox:AddBlank(3);
             Groupbox:Resize();
 
             Tab.Groupboxes[Info.Name] = Groupbox;
