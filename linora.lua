@@ -1397,7 +1397,7 @@ do
             setmetatable(Label, BaseAddons);
         end
 
-        Groupbox:AddBlank(5);
+        Groupbox:AddBlank(3);
         Groupbox:Resize();
 
         return Label;
@@ -2460,6 +2460,7 @@ do
 
                             Library:SafeCallback(Dropdown.Callback, Dropdown.Value);
                             Library:SafeCallback(Dropdown.Changed, Dropdown.Value);
+                            Library:UpdateDependencyBoxes();
 
                             Library:AttemptSave();
                         end;
@@ -2526,6 +2527,7 @@ do
 
             Library:SafeCallback(Dropdown.Callback, Dropdown.Value);
             Library:SafeCallback(Dropdown.Changed, Dropdown.Value);
+            Library:UpdateDependencyBoxes();
         end;
 
         DropdownOuter.InputBegan:Connect(function(Input)
@@ -2642,6 +2644,10 @@ do
                 local Value = Dependency[2];
 
                 if Elem.Type == 'Toggle' and Elem.Value ~= Value then
+                    Holder.Visible = false;
+                    Depbox:Resize();
+                    return;
+                elseif Elem.Type == 'Dropdown' and Elem.Value ~= Value then
                     Holder.Visible = false;
                     Depbox:Resize();
                     return;
@@ -3114,8 +3120,8 @@ function Library:CreateWindow(...)
         local LeftSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0, 8 - 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Position = UDim2.new(0, 4, 0, 4);
+            Size = UDim2.new(0.5, -8, 1, -8);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3127,8 +3133,8 @@ function Library:CreateWindow(...)
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -12 + 2, 0, 507 + 2);
+            Position = UDim2.new(0.5, 4, 0, 4);
+            Size = UDim2.new(0.5, -8, 1, -8);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
@@ -3138,7 +3144,7 @@ function Library:CreateWindow(...)
         });
 
         Library:Create('UIListLayout', {
-            Padding = UDim.new(0, 8);
+            Padding = UDim.new(0, 4);
             FillDirection = Enum.FillDirection.Vertical;
             SortOrder = Enum.SortOrder.LayoutOrder;
             HorizontalAlignment = Enum.HorizontalAlignment.Center;
@@ -3146,7 +3152,7 @@ function Library:CreateWindow(...)
         });
 
         Library:Create('UIListLayout', {
-            Padding = UDim.new(0, 8);
+            Padding = UDim.new(0, 4);
             FillDirection = Enum.FillDirection.Vertical;
             SortOrder = Enum.SortOrder.LayoutOrder;
             HorizontalAlignment = Enum.HorizontalAlignment.Center;
@@ -3225,20 +3231,24 @@ function Library:CreateWindow(...)
                 BackgroundColor3 = 'AccentColor';
             });
 
+            local hasTitle = type(Info.Name) == 'string' and Info.Name ~= '';
+            local headerH = hasTitle and 18 or 4;
+
             local GroupboxLabel = Library:CreateLabel({
-                Size = UDim2.new(1, 0, 0, 18);
+                Size = UDim2.new(1, 0, 0, hasTitle and 16 or 0);
                 Position = UDim2.new(0, 4, 0, 2);
                 TextSize = 14;
-                Text = Info.Name;
+                Text = hasTitle and Info.Name or '';
                 TextXAlignment = Enum.TextXAlignment.Left;
+                Visible = hasTitle;
                 ZIndex = 5;
                 Parent = BoxInner;
             });
 
             local Container = Library:Create('Frame', {
                 BackgroundTransparency = 1;
-                Position = UDim2.new(0, 4, 0, 20);
-                Size = UDim2.new(1, -4, 1, -20);
+                Position = UDim2.new(0, 4, 0, headerH);
+                Size = UDim2.new(1, -8, 1, -headerH);
                 ZIndex = 1;
                 Parent = BoxInner;
             });
@@ -3258,7 +3268,7 @@ function Library:CreateWindow(...)
                     end;
                 end;
 
-                BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
+                BoxOuter.Size = UDim2.new(1, 0, 0, headerH + Size + 4);
             end;
 
             Groupbox.Container = Container;
@@ -3266,7 +3276,8 @@ function Library:CreateWindow(...)
 
             Groupbox:Resize();
 
-            Tab.Groupboxes[Info.Name] = Groupbox;
+            local boxKey = hasTitle and Info.Name or ('GB_' .. tostring(BoxOuter));
+            Tab.Groupboxes[boxKey] = Groupbox;
 
             return Groupbox;
         end;
