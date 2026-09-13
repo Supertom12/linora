@@ -2763,6 +2763,39 @@ do
     Library.WatermarkText = WatermarkLabel;
     Library:MakeDraggable(Library.Watermark);
 
+    -- live FPS counter appended to the watermark ("rivals.gg | 60 fps")
+    local WatermarkBase = '';
+    local WatermarkFps = 0;
+    local WatermarkFrames = 0;
+    local WatermarkLastTick = os.clock();
+
+    task.spawn(function()
+        while ScreenGui.Parent do
+            WatermarkFrames += 1;
+            local now = os.clock();
+            if now - WatermarkLastTick >= 0.5 then
+                WatermarkFps = math.floor(WatermarkFrames / (now - WatermarkLastTick));
+                WatermarkFrames = 0;
+                WatermarkLastTick = now;
+                if WatermarkBase ~= '' and WatermarkLabel.Parent then
+                    WatermarkLabel.Text = WatermarkBase .. "  |  " .. WatermarkFps .. " fps";
+                end
+            end
+            RunService.Heartbeat:Wait();
+        end
+    end);
+
+    -- override SetWatermark so the base text stays in sync with the FPS loop
+    local OriginalSetWatermark = Library.SetWatermark;
+    function Library:SetWatermark(Text)
+        WatermarkBase = Text or '';
+        if OriginalSetWatermark then
+            OriginalSetWatermark(Library, Text);
+        end
+        WatermarkLabel.Text = WatermarkBase .. "  |  " .. WatermarkFps .. " fps";
+        WatermarkOuter.Visible = true;
+    end
+
 
 
     local KeybindOuter = Library:Create('Frame', {
@@ -2977,6 +3010,66 @@ function Library:CreateWindow(...)
     });
 
     Library:MakeDraggable(Outer, 25);
+
+    -- glass texture: make the window background semi-transparent so the game shows through subtly
+    local MinSize = Vector2.new(420, 320);
+
+    local ResizeHandle = Library:Create('TextButton', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(1, 1);
+        Position = UDim2.new(1, -2, 1, -2);
+        Size = UDim2.new(0, 14, 0, 14);
+        AutoButtonColor = false;
+        Text = '';
+        ZIndex = 50;
+        Parent = Outer;
+    });
+
+    Library:AddToRegistry(ResizeHandle, {
+        BackgroundColor3 = 'AccentColor';
+    });
+
+    -- diagonal grip lines on the handle
+    local GripFrame = Library:Create('Frame', {
+        BackgroundTransparency = 1;
+        Size = UDim2.new(1, 0, 1, 0);
+        ClipsDescendants = true;
+        ZIndex = 51;
+        Parent = ResizeHandle;
+    });
+
+    for i = -2, 2 do
+        Library:Create('Frame', {
+            BackgroundColor3 = Color3.new(0, 0, 0);
+            BorderSizePixel = 0;
+            AnchorPoint = Vector2.new(0.5, 0.5);
+            Position = UDim2.new(0.5, i * 3, 0.5, i * 3);
+            Size = UDim2.new(0, 1, 0, 8);
+            Rotation = 45;
+            ZIndex = 52;
+            Parent = GripFrame;
+        });
+    end
+
+    ResizeHandle.MouseButton1Down:Connect(function()
+        local StartMouse = Vector2.new(Mouse.X, Mouse.Y);
+        local StartSize = Vector2.new(Outer.Size.X.Offset, Outer.Size.Y.Offset);
+
+        while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+            local Delta = Vector2.new(Mouse.X - StartMouse.X, Mouse.Y - StartMouse.Y);
+            local NewW = math.max(MinSize.X, StartSize.X + Delta.X);
+            local NewH = math.max(MinSize.Y, StartSize.Y + Delta.Y);
+            Outer.Size = UDim2.new(0, NewW, 0, NewH);
+            RenderStepped:Wait();
+        end
+    end);
+
+    -- apply glass transparency to the window backgrounds
+    pcall(function()
+        Outer.BackgroundTransparency = 0.08;
+        Inner.BackgroundTransparency = 0.12;
+    end);
 
     local Inner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
@@ -3601,9 +3694,25 @@ function Library:CreateWindow(...)
                     continue;
                 end;
 
-                TweenService:Create(Desc, TweenInfo.new(FadeTime, Enum.EasingStyle.Linear), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
+                -- Quint easing gives a smoother, more polished fade than linear
+                TweenService:Create(Desc, TweenInfo.new(FadeTime, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), { [Prop] = Toggled and Cache[Prop] or 1 }):Play();
             end;
         end;
+
+        -- subtle scale pop on the window itself for extra polish (only on close, restore on open)
+        pcall(function()
+            if Toggled then
+                if Window._SavedSize then
+                    Outer.Size = Window._SavedSize;
+                    Window._SavedSize = nil;
+                end
+            else
+                Window._SavedSize = Outer.Size;
+                TweenService:Create(Outer, TweenInfo.new(FadeTime, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut), {
+                    Size = UDim2.new(0, Outer.Size.X.Offset * 0.97, 0, Outer.Size.Y.Offset * 0.97)
+                }):Play();
+            end
+        end);
 
         task.wait(FadeTime);
 
