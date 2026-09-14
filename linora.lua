@@ -2702,9 +2702,10 @@ do
     });
 
     local WatermarkOuter = Library:Create('Frame', {
+        AnchorPoint = Vector2.new(0.5, 0);
         BorderColor3 = Color3.new(0, 0, 0);
-        Position = UDim2.new(0, 100, 0, -25);
-        Size = UDim2.new(0, 213, 0, 20);
+        Position = UDim2.new(0.5, 0, 0, 0);
+        Size = UDim2.new(0, 213, 0, 22);
         ZIndex = 200;
         Visible = false;
         Parent = ScreenGui;
@@ -2751,10 +2752,10 @@ do
     });
 
     local WatermarkLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 5, 0, 0);
-        Size = UDim2.new(1, -4, 1, 0);
+        Position = UDim2.new(0, 0, 0, 0);
+        Size = UDim2.new(1, 0, 1, 0);
         TextSize = 14;
-        TextXAlignment = Enum.TextXAlignment.Left;
+        TextXAlignment = Enum.TextXAlignment.Center;
         ZIndex = 203;
         Parent = InnerFrame;
     });
