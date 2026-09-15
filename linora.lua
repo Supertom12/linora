@@ -48,43 +48,45 @@ local Library = {
     DependencyBoxes = {};
     Searchables = {};
 
-    -- Icons from https://github.com/Supertom12/linora (PNG)
+    -- Phosphor Filled (Nebula) — solid icons, tinted via ImageColor3
     IconBase = 'https://raw.githubusercontent.com/Supertom12/linora/main/';
     Icons = {
-        user = 'user.png',
-        ['dollar-sign'] = 'dollar-sign.png',
-        cog = 'cog.png',
-        settings = 'settings.png',
-        car = 'car.png',
-        swords = 'swords.png',
-        eye = 'eye.png',
-        search = 'search.png',
-        briefcase = 'briefcase.png',
-        ['map-pin'] = 'map-pin.png',
-        sword = 'swords.png',
-        ['settings-2'] = 'settings.png',
-        ['car-front'] = 'car.png',
-        wrench = 'cog.png',
-        crosshair = 'swords.png',
-        ['scan-eye'] = 'eye.png',
-        ['circle-user-round'] = 'user.png',
-        ['circle-dollar-sign'] = 'dollar-sign.png',
+        user = 'rbxassetid://92109577763657',
+        ['dollar-sign'] = 'rbxassetid://92492175987422',
+        cog = 'rbxassetid://128863007232463',
+        settings = 'rbxassetid://128863007232463',
+        car = 'rbxassetid://105893330807278',
+        swords = 'rbxassetid://118652945169395',
+        sword = 'rbxassetid://118652945169395',
+        eye = 'rbxassetid://91148908779390',
+        search = 'rbxassetid://97766305654243',
+        briefcase = 'rbxassetid://115927013358481',
+        ['map-pin'] = 'rbxassetid://134492119148232',
+        ['settings-2'] = 'rbxassetid://138683035860008',
+        ['car-front'] = 'rbxassetid://105893330807278',
+        wrench = 'rbxassetid://87682633335385',
+        crosshair = 'rbxassetid://70953410348206',
+        ['scan-eye'] = 'rbxassetid://91148908779390',
+        ['circle-user-round'] = 'rbxassetid://79064078939950',
+        ['circle-dollar-sign'] = 'rbxassetid://92492175987422',
+        ['magnifying-glass'] = 'rbxassetid://97766305654243',
+        ['gear-six'] = 'rbxassetid://138683035860008',
     };
 
     TabIcons = {
-        Default = 'user.png',
-        Main = 'user.png',
-        Player = 'user.png',
-        Money = 'dollar-sign.png',
-        Misc = 'map-pin.png',
-        Teleports = 'map-pin.png',
-        Autofarm = 'briefcase.png',
-        Farm = 'briefcase.png',
-        Combat = 'swords.png',
-        Visuals = 'eye.png',
-        Vehicles = 'car.png',
-        Vehicle = 'car.png',
-        Settings = 'settings.png',
+        Default = 'user',
+        Main = 'user',
+        Player = 'user',
+        Money = 'briefcase',
+        Misc = 'map-pin',
+        Teleports = 'map-pin',
+        Autofarm = 'briefcase',
+        Farm = 'briefcase',
+        Combat = 'sword',
+        Visuals = 'eye',
+        Vehicles = 'car',
+        Vehicle = 'car',
+        Settings = 'settings',
     };
 
     Signals = {};
@@ -119,24 +121,26 @@ function Library:GetIcon(Name)
     end
 
     local Fallbacks = {
-        user = 'rbxassetid://81899856845503',
-        ['dollar-sign'] = 'rbxassetid://118972397587528',
-        cog = 'rbxassetid://134998527925514',
-        settings = 'rbxassetid://101463883805422',
-        car = 'rbxassetid://104209031513829',
-        swords = 'rbxassetid://89815227241465',
-        eye = 'rbxassetid://139722329189430',
-        search = 'rbxassetid://125618569555993',
-        briefcase = 'rbxassetid://79573382931819',
-        ['map-pin'] = 'rbxassetid://125589857044225',
-        sword = 'rbxassetid://89815227241465',
-        ['settings-2'] = 'rbxassetid://101463883805422',
-        ['car-front'] = 'rbxassetid://104209031513829',
-        wrench = 'rbxassetid://134998527925514',
-        crosshair = 'rbxassetid://89815227241465',
-        ['scan-eye'] = 'rbxassetid://139722329189430',
-        ['circle-user-round'] = 'rbxassetid://81899856845503',
-        ['circle-dollar-sign'] = 'rbxassetid://118972397587528',
+        user = 'rbxassetid://92109577763657',
+        ['dollar-sign'] = 'rbxassetid://92492175987422',
+        cog = 'rbxassetid://128863007232463',
+        settings = 'rbxassetid://128863007232463',
+        car = 'rbxassetid://105893330807278',
+        swords = 'rbxassetid://118652945169395',
+        sword = 'rbxassetid://118652945169395',
+        eye = 'rbxassetid://91148908779390',
+        search = 'rbxassetid://97766305654243',
+        briefcase = 'rbxassetid://115927013358481',
+        ['map-pin'] = 'rbxassetid://134492119148232',
+        ['settings-2'] = 'rbxassetid://138683035860008',
+        ['car-front'] = 'rbxassetid://105893330807278',
+        wrench = 'rbxassetid://87682633335385',
+        crosshair = 'rbxassetid://70953410348206',
+        ['scan-eye'] = 'rbxassetid://91148908779390',
+        ['circle-user-round'] = 'rbxassetid://79064078939950',
+        ['circle-dollar-sign'] = 'rbxassetid://92492175987422',
+        ['magnifying-glass'] = 'rbxassetid://97766305654243',
+        ['gear-six'] = 'rbxassetid://138683035860008',
     };
 
     local key = string.lower(Name);
@@ -1996,12 +2000,11 @@ do
         local ToggleOuter = Library:Create('Frame', {
             BackgroundColor3 = Library.SurfaceColor;
             BorderSizePixel = 0;
-            Position = UDim2.new(0, 0, 0.5, -8);
-            Size = UDim2.new(0, 16, 0, 16);
+            Position = UDim2.new(0, 0, 0.5, -7);
+            Size = UDim2.new(0, 14, 0, 14);
             ZIndex = 6;
             Parent = Row;
         });
-        Library:AddCorner(ToggleOuter, 4);
         Library:AddStroke(ToggleOuter, Library.OutlineColor, 1);
 
         Library:AddToRegistry(ToggleOuter, {
@@ -2011,21 +2014,19 @@ do
         local Check = Library:Create('Frame', {
             BackgroundColor3 = Library.AccentColor;
             BorderSizePixel = 0;
-            AnchorPoint = Vector2.new(0.5, 0.5);
-            Position = UDim2.fromScale(0.5, 0.5);
-            Size = UDim2.fromOffset(8, 8);
+            Position = UDim2.new(0, 0, 0, 0);
+            Size = UDim2.new(1, 0, 1, 0);
             Visible = false;
             ZIndex = 7;
             Parent = ToggleOuter;
         });
-        Library:AddCorner(Check, 2);
         Library:AddToRegistry(Check, {
             BackgroundColor3 = 'AccentColor';
         });
 
         local ToggleLabel = Library:CreateLabel({
-            Size = UDim2.new(1, -28, 1, 0);
-            Position = UDim2.new(0, 24, 0, 0);
+            Size = UDim2.new(1, -24, 1, 0);
+            Position = UDim2.new(0, 22, 0, 0);
             TextSize = 13;
             Font = Library.FontRegular;
             Text = Info.Text;
@@ -2060,11 +2061,8 @@ do
 
         function Toggle:Display()
             Check.Visible = Toggle.Value == true;
-            if Toggle.Value then
-                ToggleOuter.BackgroundColor3 = Color3.fromRGB(28, 40, 62);
-            else
-                ToggleOuter.BackgroundColor3 = Library.SurfaceColor;
-            end
+            -- keep outer dark; fill is the solid accent block
+            ToggleOuter.BackgroundColor3 = Library.SurfaceColor;
         end;
 
         function Toggle:OnChanged(Func)
@@ -3428,31 +3426,18 @@ function Library:CreateWindow(...)
 
         local TabButton = Library:Create('TextButton', {
             BackgroundTransparency = 1;
-            Size = UDim2.new(1, -8, 0, 64);
+            Size = UDim2.new(1, -6, 0, 58);
             Text = '';
             AutoButtonColor = false;
             ZIndex = 4;
             Parent = TabArea;
         });
 
-        -- Soft active pill (Vaelith-style), not a card stack
-        local ActiveBg = Library:Create('Frame', {
-            BackgroundColor3 = Color3.fromRGB(28, 32, 40);
-            BackgroundTransparency = 1;
-            BorderSizePixel = 0;
-            AnchorPoint = Vector2.new(0.5, 0);
-            Position = UDim2.new(0.5, 0, 0, 2);
-            Size = UDim2.new(0, 52, 0, 52);
-            ZIndex = 4;
-            Parent = TabButton;
-        });
-        Library:AddCorner(ActiveBg, 10);
-
         local IconImage = Library:Create('ImageLabel', {
             BackgroundTransparency = 1;
             AnchorPoint = Vector2.new(0.5, 0);
-            Position = UDim2.new(0.5, 0, 0, 6);
-            Size = UDim2.new(0, 30, 0, 30);
+            Position = UDim2.new(0.5, 0, 0, 8);
+            Size = UDim2.new(0, 20, 0, 20);
             Image = IconId;
             ImageColor3 = Library.MutedColor;
             ScaleType = Enum.ScaleType.Fit;
@@ -3461,16 +3446,32 @@ function Library:CreateWindow(...)
         });
 
         local TabButtonLabel = Library:CreateLabel({
-            Position = UDim2.new(0, 2, 0, 40);
-            Size = UDim2.new(1, -4, 0, 18);
+            Position = UDim2.new(0, 2, 0, 30);
+            Size = UDim2.new(1, -4, 0, 16);
             Text = Name;
             TextSize = 11;
-            Font = Library.FontRegular;
+            Font = Library.Font;
             TextColor3 = Library.MutedColor;
             TextTruncate = Enum.TextTruncate.AtEnd;
             ZIndex = 5;
             Parent = TabButton;
         });
+
+        -- Active underline pill under label (Vaelith)
+        local ActiveBar = Library:Create('Frame', {
+            BackgroundColor3 = Library.AccentColor;
+            BackgroundTransparency = 1;
+            BorderSizePixel = 0;
+            AnchorPoint = Vector2.new(0.5, 0);
+            Position = UDim2.new(0.5, 0, 0, 48);
+            Size = UDim2.new(0, 18, 0, 3);
+            ZIndex = 6;
+            Parent = TabButton;
+        });
+        local ActiveBarCorner = Instance.new('UICorner');
+        ActiveBarCorner.CornerRadius = UDim.new(1, 0);
+        ActiveBarCorner.Parent = ActiveBar;
+        Library:AddToRegistry(ActiveBar, { BackgroundColor3 = 'AccentColor'; });
 
         local TabFrame = Library:Create('Frame', {
             Name = 'TabFrame',
@@ -3486,13 +3487,15 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0, 10, 0, 8);
-            Size = UDim2.new(0.5, -16, 1, -16);
+            Size = UDim2.new(0.5, -16, 1, -34);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
             MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
             BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-            ScrollBarThickness = 0;
+            ScrollBarThickness = 5;
             ScrollBarImageColor3 = Library.AccentColor;
+            ScrollBarImageTransparency = 0.7;
+            VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
             ClipsDescendants = true;
             ZIndex = 2;
             Parent = TabFrame;
@@ -3502,13 +3505,14 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(0.5, 4, 0, 8);
-            Size = UDim2.new(0.5, -8, 1, -12);
+            Size = UDim2.new(0.5, -8, 1, -34);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
             MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
             BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-            ScrollBarThickness = 8;
+            ScrollBarThickness = 5;
             ScrollBarImageColor3 = Library.AccentColor;
+            ScrollBarImageTransparency = 0.7;
             VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
             ClipsDescendants = true;
             ZIndex = 2;
@@ -3533,7 +3537,7 @@ function Library:CreateWindow(...)
 
         for _, Side in next, { LeftSide, RightSide } do
             Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 20);
+                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 48);
             end);
         end;
 
@@ -3542,16 +3546,16 @@ function Library:CreateWindow(...)
                 Other:HideTab();
             end;
 
-            ActiveBg.BackgroundTransparency = 0.15;
             IconImage.ImageColor3 = Library.AccentColor;
-            TabButtonLabel.TextColor3 = Library.AccentColor;
+            TabButtonLabel.TextColor3 = Library.FontColor;
+            ActiveBar.BackgroundTransparency = 0;
             TabFrame.Visible = true;
         end;
 
         function Tab:HideTab()
-            ActiveBg.BackgroundTransparency = 1;
             IconImage.ImageColor3 = Library.MutedColor;
             TabButtonLabel.TextColor3 = Library.MutedColor;
+            ActiveBar.BackgroundTransparency = 1;
             TabFrame.Visible = false;
         end;
 
@@ -3664,8 +3668,8 @@ function Library:CreateWindow(...)
             local BoxOuter = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = FullWidth and UDim2.new(1, -8, 1, -6) or UDim2.new(1, 0, 0, 0);
-                Position = FullWidth and UDim2.new(0, 4, 0, 4) or UDim2.new(0, 0, 0, 0);
+                Size = FullWidth and UDim2.new(1, -8, 1, -4) or UDim2.new(1, 0, 0, 0);
+                Position = FullWidth and UDim2.new(0, 4, 0, 2) or UDim2.new(0, 0, 0, 0);
                 ZIndex = 2;
                 Parent = FullWidth and TabFrame or (Info.Side == 1 and LeftSide or RightSide);
             });
@@ -3682,7 +3686,7 @@ function Library:CreateWindow(...)
             local TabboxButtons = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 Position = UDim2.new(0, 0, 0, 0);
-                Size = UDim2.new(1, 0, 0, 28);
+                Size = UDim2.new(1, 0, 0, 30);
                 ZIndex = 5;
                 Parent = BoxInner;
             });
@@ -3700,7 +3704,7 @@ function Library:CreateWindow(...)
             local TabStripLine = Library:Create('Frame', {
                 BackgroundColor3 = Library.OutlineColor;
                 BorderSizePixel = 0;
-                Position = UDim2.new(0, 0, 0, 28);
+                Position = UDim2.new(0, 0, 0, 30);
                 Size = UDim2.new(1, 0, 0, 1);
                 ZIndex = 5;
                 Parent = BoxInner;
@@ -3713,43 +3717,69 @@ function Library:CreateWindow(...)
                     Tabboxes = {};
                     Name = Name;
                 };
-                local TabW = Library:GetTextBounds(Name, Library.Font, 13) + 4;
+                local TabW = math.max(Library:GetTextBounds(Name, Library.Font, 13) + 20, 48);
 
-                local Button = Library:Create('Frame', {
+                local Button = Library:Create('TextButton', {
+                    BackgroundColor3 = Color3.fromRGB(24, 24, 28);
                     BackgroundTransparency = 1;
                     BorderSizePixel = 0;
-                    Size = UDim2.new(0, TabW, 1, 0);
+                    Size = UDim2.new(0, TabW, 0, 26);
+                    Text = '';
+                    AutoButtonColor = false;
                     ZIndex = 6;
                     Parent = TabboxButtons;
                 });
+                local ButtonCorner = Instance.new('UICorner');
+                ButtonCorner.CornerRadius = UDim.new(0, 4);
+                ButtonCorner.Parent = Button;
 
                 local ButtonLabel = Library:CreateLabel({
-                    Size = UDim2.new(1, 0, 1, -3);
+                    Size = UDim2.new(1, -8, 1, 0);
+                    Position = UDim2.new(0, 4, 0, 0);
                     TextSize = 13;
                     Font = Library.Font;
                     Text = Name;
-                    TextXAlignment = Enum.TextXAlignment.Left;
+                    TextXAlignment = Enum.TextXAlignment.Center;
                     TextColor3 = Library.MutedColor;
                     ZIndex = 7;
                     Parent = Button;
                 });
 
+                -- Soft glow + solid underline sitting on the divider
+                local UnderGlow = Library:Create('Frame', {
+                    BackgroundColor3 = Library.AccentColor;
+                    BackgroundTransparency = 1;
+                    BorderSizePixel = 0;
+                    AnchorPoint = Vector2.new(0.5, 0.5);
+                    Position = UDim2.new(0.5, 0, 1, 4);
+                    Size = UDim2.new(0, math.max(TabW - 18, 22), 0, 8);
+                    ZIndex = 8;
+                    Parent = Button;
+                });
+                local GlowCorner = Instance.new('UICorner');
+                GlowCorner.CornerRadius = UDim.new(1, 0);
+                GlowCorner.Parent = UnderGlow;
+                Library:AddToRegistry(UnderGlow, { BackgroundColor3 = 'AccentColor'; });
+
                 local Underline = Library:Create('Frame', {
                     BackgroundColor3 = Library.AccentColor;
                     BorderSizePixel = 0;
-                    AnchorPoint = Vector2.new(0, 1);
-                    Position = UDim2.new(0, 0, 1, 0);
-                    Size = UDim2.new(1, 0, 0, 2);
+                    AnchorPoint = Vector2.new(0.5, 0.5);
+                    Position = UDim2.new(0.5, 0, 1, 4);
+                    Size = UDim2.new(0, math.max(TabW - 24, 18), 0, 2);
                     Visible = false;
                     ZIndex = 9;
                     Parent = Button;
                 });
+                local UnderCorner = Instance.new('UICorner');
+                UnderCorner.CornerRadius = UDim.new(1, 0);
+                UnderCorner.Parent = Underline;
                 Library:AddToRegistry(Underline, { BackgroundColor3 = 'AccentColor'; });
 
                 local PageRoot = Library:Create('Frame', {
                     BackgroundTransparency = 1;
-                    Position = UDim2.new(0, 0, 0, 34);
-                    Size = UDim2.new(1, 0, 1, -34);
+                    Position = UDim2.new(0, 0, 0, 36);
+                    Size = UDim2.new(1, 0, 1, -36);
                     ZIndex = 1;
                     Visible = false;
                     Parent = BoxInner;
@@ -3762,13 +3792,15 @@ function Library:CreateWindow(...)
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
                         Position = UDim2.new(0, 0, 0, 0);
-                        Size = UDim2.new(0.5, -10, 1, 0);
+                        Size = UDim2.new(0.5, -10, 1, -28);
                         CanvasSize = UDim2.new(0, 0, 0, 0);
                         TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-                        ScrollBarThickness = 0;
+                        ScrollBarThickness = 5;
                         ScrollBarImageColor3 = Library.AccentColor;
+                        ScrollBarImageTransparency = 0.7;
+                        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
                         ClipsDescendants = true;
                         ZIndex = 2;
                         Parent = PageRoot;
@@ -3777,13 +3809,14 @@ function Library:CreateWindow(...)
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
                         Position = UDim2.new(0.5, 4, 0, 0);
-                        Size = UDim2.new(0.5, -4, 1, 0);
+                        Size = UDim2.new(0.5, -4, 1, -28);
                         CanvasSize = UDim2.new(0, 0, 0, 0);
                         TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-                        ScrollBarThickness = 8;
+                        ScrollBarThickness = 5;
                         ScrollBarImageColor3 = Library.AccentColor;
+                        ScrollBarImageTransparency = 0.7;
                         VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
                         ClipsDescendants = true;
                         ZIndex = 2;
@@ -3797,7 +3830,7 @@ function Library:CreateWindow(...)
                             Parent = Side;
                         });
                         Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-                            Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 16);
+                            Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 48);
                         end);
                     end
 
@@ -3908,6 +3941,8 @@ function Library:CreateWindow(...)
                     end;
                     PageRoot.Visible = true;
                     Underline.Visible = true;
+                    UnderGlow.BackgroundTransparency = 0.72;
+                    Button.BackgroundTransparency = 0.35;
                     ButtonLabel.TextColor3 = Library.FontColor;
                     Page:Resize();
                 end;
@@ -3915,12 +3950,14 @@ function Library:CreateWindow(...)
                 function Page:Hide()
                     PageRoot.Visible = false;
                     Underline.Visible = false;
+                    UnderGlow.BackgroundTransparency = 1;
+                    Button.BackgroundTransparency = 1;
                     ButtonLabel.TextColor3 = Library.MutedColor;
                 end;
 
                 function Page:Resize()
                     if FullWidth then
-                        BoxOuter.Size = UDim2.new(1, -8, 1, -6);
+                        BoxOuter.Size = UDim2.new(1, -8, 1, -4);
                         if PageContainer then
                             local ContentH, Count = 0, 0;
                             for _, Element in next, PageContainer:GetChildren() do
