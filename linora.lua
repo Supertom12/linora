@@ -34,10 +34,10 @@ local Library = {
     MainColor = Color3.fromRGB(18, 18, 20);
     BackgroundColor = Color3.fromRGB(12, 12, 14);
     AccentColor = Color3.fromRGB(55, 130, 255);
-    OutlineColor = Color3.fromRGB(28, 30, 34);
+    OutlineColor = Color3.fromRGB(38, 40, 46);
     RiskColor = Color3.fromRGB(255, 50, 50),
     MutedColor = Color3.fromRGB(140, 145, 155);
-    SurfaceColor = Color3.fromRGB(16, 16, 18);
+    SurfaceColor = Color3.fromRGB(24, 25, 29);
     SidebarWidth = 78;
 
     Black = Color3.new(0, 0, 0);
@@ -48,44 +48,69 @@ local Library = {
     DependencyBoxes = {};
     Searchables = {};
 
-    -- Fluent Lucide icon pack (real rbxassetids)
+    -- Nebula Icon Library · Lucide (https://github.com/Nebula-Softworks/Nebula-Icon-Library)
     Icons = {
-        user = 'rbxassetid://10747373176',
-        ['user-cog'] = 'rbxassetid://10747372167',
-        users = 'rbxassetid://10747373426',
-        ['dollar-sign'] = 'rbxassetid://10723343958',
-        wallet = 'rbxassetid://10747376205',
-        banknote = 'rbxassetid://10709770178',
-        cog = 'rbxassetid://10709810948',
-        settings = 'rbxassetid://10734950309',
-        ['settings-2'] = 'rbxassetid://10734950020',
-        car = 'rbxassetid://10709789810',
-        sword = 'rbxassetid://10734975486',
-        swords = 'rbxassetid://10734975692',
-        eye = 'rbxassetid://10723346959',
-        search = 'rbxassetid://10734943674',
-        home = 'rbxassetid://10723407389',
-        briefcase = 'rbxassetid://10709782662',
-        ['map-pin'] = 'rbxassetid://10734886004',
-        crosshair = 'rbxassetid://10709818534',
-        shield = 'rbxassetid://10734951847',
-        sliders = 'rbxassetid://10734963400',
+        -- people
+        user = 'rbxassetid://81899856845503',
+        users = 'rbxassetid://109023655602096',
+        ['circle-user'] = 'rbxassetid://73363870264217',
+        ['circle-user-round'] = 'rbxassetid://103422319407938',
+        -- money
+        ['dollar-sign'] = 'rbxassetid://118972397587528',
+        ['circle-dollar-sign'] = 'rbxassetid://103021845191343',
+        coins = 'rbxassetid://128784569032326',
+        ['hand-coins'] = 'rbxassetid://83908670424159',
+        wallet = 'rbxassetid://82693664006746',
+        banknote = 'rbxassetid://83624352345036',
+        -- tools / settings
+        cog = 'rbxassetid://134998527925514',
+        settings = 'rbxassetid://101463883805422',
+        ['settings-2'] = 'rbxassetid://75339943202126',
+        ['sliders-horizontal'] = 'rbxassetid://104021219611587',
+        wrench = 'rbxassetid://108764185264619',
+        ['file-cog'] = 'rbxassetid://89816062085634',
+        -- vehicles
+        car = 'rbxassetid://104209031513829',
+        ['car-front'] = 'rbxassetid://108397050137008',
+        truck = 'rbxassetid://102380610139245',
+        -- combat / visuals
+        sword = 'rbxassetid://75020726675544',
+        swords = 'rbxassetid://89815227241465',
+        crosshair = 'rbxassetid://114929017287945',
+        target = 'rbxassetid://81035867308138',
+        eye = 'rbxassetid://139722329189430',
+        ['scan-eye'] = 'rbxassetid://97734789454128',
+        binoculars = 'rbxassetid://114841582615801',
+        -- nav / misc
+        search = 'rbxassetid://125618569555993',
+        briefcase = 'rbxassetid://79573382931819',
+        ['map-pin'] = 'rbxassetid://125589857044225',
+        map = 'rbxassetid://108279805507438',
+        compass = 'rbxassetid://117355392623233',
+        navigation = 'rbxassetid://90646250576973',
+        shield = 'rbxassetid://84528813312016',
+        ['shield-check'] = 'rbxassetid://83449656859552',
+        keyboard = 'rbxassetid://78021479821645',
+        ['gamepad-2'] = 'rbxassetid://123513783706820',
+        ['layout-dashboard'] = 'rbxassetid://109242208940047',
+        zap = 'rbxassetid://99546940565021',
+        sparkles = 'rbxassetid://130602425201313',
     };
 
     TabIcons = {
-        Default = 'rbxassetid://10747373176',
-        Main = 'rbxassetid://10747373176',
-        Player = 'rbxassetid://10747373176',
-        Money = 'rbxassetid://10723343958',
-        Misc = 'rbxassetid://10709810948',
-        Teleports = 'rbxassetid://10734886004',
-        Autofarm = 'rbxassetid://10709782662',
-        Farm = 'rbxassetid://10709782662',
-        Combat = 'rbxassetid://10734975692',
-        Visuals = 'rbxassetid://10723346959',
-        Vehicles = 'rbxassetid://10709789810',
-        Vehicle = 'rbxassetid://10709789810',
-        Settings = 'rbxassetid://10734950309',
+        Default = 'rbxassetid://103422319407938',
+        Main = 'rbxassetid://103422319407938',
+        Player = 'rbxassetid://103422319407938',
+        Money = 'rbxassetid://103021845191343',
+        Misc = 'rbxassetid://108764185264619',
+        Teleports = 'rbxassetid://125589857044225',
+        Autofarm = 'rbxassetid://79573382931819',
+        Farm = 'rbxassetid://79573382931819',
+        Combat = 'rbxassetid://114929017287945',
+        Visuals = 'rbxassetid://97734789454128',
+        Vehicles = 'rbxassetid://108397050137008',
+        Vehicle = 'rbxassetid://108397050137008',
+        Settings = 'rbxassetid://75339943202126',
     };
 
     Signals = {};
@@ -3078,7 +3103,7 @@ function Library:CreateWindow(...)
     if type(Config.MenuFadeTime) ~= 'number' then Config.MenuFadeTime = 0.2 end
 
     if typeof(Config.Position) ~= 'UDim2' then Config.Position = UDim2.fromOffset(140, 80) end
-    if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(720, 480) end
+    if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(760, 520) end
 
     if Config.Center then
         Config.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -3099,6 +3124,7 @@ function Library:CreateWindow(...)
         Position = Config.Position,
         Size = Config.Size,
         Visible = false;
+        ClipsDescendants = true;
         ZIndex = 1;
         Parent = ScreenGui;
     });
@@ -3108,20 +3134,33 @@ function Library:CreateWindow(...)
 
     Library:MakeDraggable(Outer, HEADER_H);
 
-    local MinSize = Vector2.new(560, 360);
+    local MinSize = Vector2.new(640, 420);
 
+    local Inner = Library:Create('Frame', {
+        BackgroundColor3 = Library.BackgroundColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 1, 0, 1);
+        Size = UDim2.new(1, -2, 1, -2);
+        ClipsDescendants = true;
+        ZIndex = 1;
+        Parent = Outer;
+    });
+    Library:AddCorner(Inner, 11);
+    Library:AddToRegistry(Inner, { BackgroundColor3 = 'BackgroundColor'; });
+
+    -- Resize grip stays INSIDE the rounded card (not hanging outside)
     local ResizeHandle = Library:Create('TextButton', {
         BackgroundColor3 = Library.AccentColor;
         BorderSizePixel = 0;
         AnchorPoint = Vector2.new(1, 1);
-        Position = UDim2.new(1, -6, 1, -6);
-        Size = UDim2.new(0, 12, 0, 12);
+        Position = UDim2.new(1, -12, 1, -12);
+        Size = UDim2.new(0, 9, 0, 9);
         AutoButtonColor = false;
         Text = '';
         ZIndex = 50;
-        Parent = Outer;
+        Parent = Inner;
     });
-    Library:AddCorner(ResizeHandle, 3);
+    Library:AddCorner(ResizeHandle, 2);
     Library:AddToRegistry(ResizeHandle, { BackgroundColor3 = 'AccentColor'; });
 
     ResizeHandle.MouseButton1Down:Connect(function()
@@ -3136,17 +3175,6 @@ function Library:CreateWindow(...)
             RenderStepped:Wait();
         end
     end);
-
-    local Inner = Library:Create('Frame', {
-        BackgroundColor3 = Library.BackgroundColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 1, 0, 1);
-        Size = UDim2.new(1, -2, 1, -2);
-        ZIndex = 1;
-        Parent = Outer;
-    });
-    Library:AddCorner(Inner, 11);
-    Library:AddToRegistry(Inner, { BackgroundColor3 = 'BackgroundColor'; });
 
     -- Header
     local Header = Library:Create('Frame', {
@@ -3203,19 +3231,19 @@ function Library:CreateWindow(...)
         BackgroundColor3 = Library.SurfaceColor;
         BorderSizePixel = 0;
         Position = UDim2.new(1, -16, 0.5, 0);
-        Size = UDim2.new(0, 180, 0, 30);
+        Size = UDim2.new(0, 340, 0, 20);
         ZIndex = 3;
         Parent = Header;
     });
-    Library:AddCorner(SearchShell, 8);
+    Library:AddCorner(SearchShell, 6);
     Library:AddStroke(SearchShell, Library.OutlineColor, 1);
     Library:AddToRegistry(SearchShell, { BackgroundColor3 = 'SurfaceColor'; });
 
     local SearchIcon = Library:Create('ImageLabel', {
         BackgroundTransparency = 1;
         AnchorPoint = Vector2.new(0, 0.5);
-        Position = UDim2.new(0, 9, 0.5, 0);
-        Size = UDim2.new(0, 14, 0, 14);
+        Position = UDim2.new(0, 10, 0.5, 0);
+        Size = UDim2.new(0, 12, 0, 12);
         Image = Library.Icons.search;
         ImageColor3 = Library.MutedColor;
         ScaleType = Enum.ScaleType.Fit;
@@ -3233,7 +3261,7 @@ function Library:CreateWindow(...)
         Size = UDim2.new(1, -34, 1, 0);
         Text = '';
         TextColor3 = Library.FontColor;
-        TextSize = 13;
+        TextSize = 11;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 4;
         Parent = SearchShell;
@@ -3314,11 +3342,13 @@ function Library:CreateWindow(...)
         BackgroundColor3 = Library.MainColor;
         BorderSizePixel = 0;
         Position = UDim2.new(0, SIDEBAR_W + 16, 0, 0);
-        Size = UDim2.new(1, -(SIDEBAR_W + 24), 1, -8);
+        Size = UDim2.new(1, -(SIDEBAR_W + 28), 1, -20);
+        ClipsDescendants = true;
         ZIndex = 2;
         Parent = Body;
     });
     Library:AddCorner(TabContainer, 10);
+    Library:AddStroke(TabContainer, Library.OutlineColor, 1);
     Library:AddToRegistry(TabContainer, {
         BackgroundColor3 = 'MainColor';
     });
@@ -3383,8 +3413,8 @@ function Library:CreateWindow(...)
         local IconImage = Library:Create('ImageLabel', {
             BackgroundTransparency = 1;
             AnchorPoint = Vector2.new(0.5, 0);
-            Position = UDim2.new(0.5, 0, 0, 6);
-            Size = UDim2.new(0, 24, 0, 24);
+            Position = UDim2.new(0.5, 0, 0, 7);
+            Size = UDim2.new(0, 22, 0, 22);
             Image = IconId;
             ImageColor3 = Library.MutedColor;
             ScaleType = Enum.ScaleType.Fit;
@@ -3417,13 +3447,14 @@ function Library:CreateWindow(...)
         local LeftSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0, 8, 0, 8);
-            Size = UDim2.new(0.5, -12, 1, -16);
+            Position = UDim2.new(0, 10, 0, 10);
+            Size = UDim2.new(0.5, -14, 1, -28);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
-            ScrollBarThickness = 2;
+            ScrollBarThickness = 3;
             ScrollBarImageColor3 = Library.AccentColor;
+            ClipsDescendants = true;
             ZIndex = 2;
             Parent = TabFrame;
         });
@@ -3431,13 +3462,14 @@ function Library:CreateWindow(...)
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0.5, 4, 0, 8);
-            Size = UDim2.new(0.5, -12, 1, -16);
+            Position = UDim2.new(0.5, 4, 0, 10);
+            Size = UDim2.new(0.5, -14, 1, -28);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
-            ScrollBarThickness = 2;
+            ScrollBarThickness = 3;
             ScrollBarImageColor3 = Library.AccentColor;
+            ClipsDescendants = true;
             ZIndex = 2;
             Parent = TabFrame;
         });
@@ -3460,7 +3492,7 @@ function Library:CreateWindow(...)
 
         for _, Side in next, { LeftSide, RightSide } do
             Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 8);
+                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 24);
             end);
         end;
 
@@ -3496,20 +3528,24 @@ function Library:CreateWindow(...)
         function Tab:AddGroupbox(Info)
             local Groupbox = {};
 
-            -- Flat section (no heavy card border) — Vaelith-style columns
+            -- Soft content cards (contained, clipped when window resizes)
             local BoxOuter = Library:Create('Frame', {
-                BackgroundTransparency = 1;
+                BackgroundColor3 = Library.SurfaceColor;
                 BorderSizePixel = 0;
                 Size = UDim2.new(1, 0, 0, 20);
+                ClipsDescendants = true;
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
+            Library:AddCorner(BoxOuter, 8);
+            Library:AddStroke(BoxOuter, Library.OutlineColor, 1);
+            Library:AddToRegistry(BoxOuter, { BackgroundColor3 = 'SurfaceColor'; });
 
             local BoxInner = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 1, 0);
-                Position = UDim2.new(0, 0, 0, 0);
+                Size = UDim2.new(1, -16, 1, -12);
+                Position = UDim2.new(0, 8, 0, 6);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
@@ -3525,11 +3561,11 @@ function Library:CreateWindow(...)
             Library:AddToRegistry(Highlight, { BackgroundColor3 = 'AccentColor'; });
 
             local hasTitle = type(Info.Name) == 'string' and Info.Name ~= '';
-            local headerH = hasTitle and 20 or 4;
+            local headerH = hasTitle and 20 or 2;
 
             local GroupboxLabel = Library:CreateLabel({
-                Size = UDim2.new(1, -4, 0, hasTitle and 16 or 0);
-                Position = UDim2.new(0, 2, 0, 0);
+                Size = UDim2.new(1, 0, 0, hasTitle and 16 or 0);
+                Position = UDim2.new(0, 0, 0, 0);
                 TextSize = 11;
                 Font = Library.Font;
                 Text = hasTitle and string.upper(Info.Name) or '';
@@ -3542,8 +3578,8 @@ function Library:CreateWindow(...)
 
             local Container = Library:Create('Frame', {
                 BackgroundTransparency = 1;
-                Position = UDim2.new(0, 2, 0, headerH);
-                Size = UDim2.new(1, -4, 1, -headerH);
+                Position = UDim2.new(0, 0, 0, headerH);
+                Size = UDim2.new(1, 0, 1, -headerH);
                 ZIndex = 1;
                 Parent = BoxInner;
             });
@@ -3551,18 +3587,24 @@ function Library:CreateWindow(...)
             Library:Create('UIListLayout', {
                 FillDirection = Enum.FillDirection.Vertical;
                 SortOrder = Enum.SortOrder.LayoutOrder;
-                Padding = UDim.new(0, 2);
+                Padding = UDim.new(0, 3);
                 Parent = Container;
             });
 
             function Groupbox:Resize()
-                local Size = 0;
+                local ContentH = 0;
+                local Count = 0;
                 for _, Element in next, Groupbox.Container:GetChildren() do
                     if (not Element:IsA('UIListLayout')) and Element.Visible then
-                        Size = Size + Element.Size.Y.Offset;
+                        ContentH = ContentH + Element.Size.Y.Offset;
+                        Count = Count + 1;
                     end;
                 end;
-                BoxOuter.Size = UDim2.new(1, 0, 0, headerH + Size + 6);
+                if Count > 1 then
+                    ContentH = ContentH + ((Count - 1) * 3); -- UIListLayout Padding
+                end;
+                -- header + content + inner top/bottom padding
+                BoxOuter.Size = UDim2.new(1, 0, 0, math.max(headerH + ContentH + 20, 36));
             end;
 
             Groupbox.Container = Container;
@@ -3587,20 +3629,24 @@ function Library:CreateWindow(...)
                 Tabs = {};
             };
 
-            -- Flat page shell: tab strip on top (like Vaelith "Character"), content below
+            -- Soft card with Character-style tab strip on top
             local BoxOuter = Library:Create('Frame', {
-                BackgroundTransparency = 1;
+                BackgroundColor3 = Library.SurfaceColor;
                 BorderSizePixel = 0;
                 Size = UDim2.new(1, 0, 0, 0);
+                ClipsDescendants = true;
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
+            Library:AddCorner(BoxOuter, 8);
+            Library:AddStroke(BoxOuter, Library.OutlineColor, 1);
+            Library:AddToRegistry(BoxOuter, { BackgroundColor3 = 'SurfaceColor'; });
 
             local BoxInner = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 1, 0);
-                Position = UDim2.new(0, 0, 0, 0);
+                Size = UDim2.new(1, -16, 1, -12);
+                Position = UDim2.new(0, 8, 0, 6);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
@@ -3704,13 +3750,18 @@ function Library:CreateWindow(...)
                     if (not Container.Visible) then
                         return;
                     end;
-                    local Size = 0;
+                    local ContentH = 0;
+                    local Count = 0;
                     for _, Element in next, Tab.Container:GetChildren() do
                         if (not Element:IsA('UIListLayout')) and Element.Visible then
-                            Size = Size + Element.Size.Y.Offset;
+                            ContentH = ContentH + Element.Size.Y.Offset;
+                            Count = Count + 1;
                         end;
                     end;
-                    BoxOuter.Size = UDim2.new(1, 0, 0, 34 + Size + 6);
+                    if Count > 1 then
+                        ContentH = ContentH + ((Count - 1) * 2); -- UIListLayout Padding
+                    end;
+                    BoxOuter.Size = UDim2.new(1, 0, 0, math.max(34 + ContentH + 20, 52));
                 end;
 
                 Button.InputBegan:Connect(function(Input)
