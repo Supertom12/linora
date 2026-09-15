@@ -2157,18 +2157,20 @@ do
         local Groupbox = self;
         local Container = Groupbox.Container;
         local DisplayLabel
+        local KNOB = 12;
+        local PAD = math.floor(KNOB / 2);
 
         if not Info.Compact then
             local TitleRow = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, -4, 0, 16);
+                Size = UDim2.new(1, -8, 0, 14);
                 ZIndex = 5;
                 Parent = Container;
             });
 
             Library:CreateLabel({
-                Size = UDim2.new(1, -56, 1, 0);
+                Size = UDim2.new(1, -64, 1, 0);
                 TextSize = 13;
                 Font = Library.FontRegular;
                 Text = Info.Text;
@@ -2179,8 +2181,8 @@ do
             });
 
             DisplayLabel = Library:CreateLabel({
-                Size = UDim2.new(0, 52, 1, 0);
-                Position = UDim2.new(1, -52, 0, 0);
+                Size = UDim2.new(0, 60, 1, 0);
+                Position = UDim2.new(1, -60, 0, 0);
                 TextSize = 12;
                 Font = Library.FontRegular;
                 Text = '';
@@ -2192,22 +2194,25 @@ do
             });
             Library:AddToRegistry(DisplayLabel, { TextColor3 = 'MutedColor'; });
 
-            Groupbox:AddBlank(4);
+            -- Keep label / value clearly above the track
+            Groupbox:AddBlank(10);
         end
 
         local SliderOuter = Library:Create('Frame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Size = UDim2.new(1, -4, 0, 16);
+            Size = UDim2.new(1, -8, 0, 20);
+            ClipsDescendants = true;
             ZIndex = 5;
             Parent = Container;
         });
 
         local SliderInner = Library:Create('Frame', {
-            BackgroundColor3 = Color3.fromRGB(28, 28, 32);
+            BackgroundColor3 = Color3.fromRGB(32, 34, 40);
             BorderSizePixel = 0;
-            Size = UDim2.new(1, 0, 0, 4);
-            Position = UDim2.new(0, 0, 0.5, -2);
+            -- Inset so the knob never spills into the scrollbar
+            Size = UDim2.new(1, -(PAD * 2), 0, 5);
+            Position = UDim2.new(0, PAD, 0.5, -2);
             ZIndex = 6;
             Parent = SliderOuter;
         });
@@ -2234,24 +2239,14 @@ do
             BackgroundColor3 = 'AccentColor';
         });
 
-        local HideBorderRight = Library:Create('Frame', {
-            BackgroundTransparency = 1;
-            BorderSizePixel = 0;
-            Position = UDim2.new(1, 0, 0, 0);
-            Size = UDim2.new(0, 1, 1, 0);
-            Visible = false;
-            ZIndex = 8;
-            Parent = Fill;
-        });
-
         local Knob = Library:Create('Frame', {
             BackgroundColor3 = Color3.fromRGB(245, 245, 248);
             BorderSizePixel = 0;
             AnchorPoint = Vector2.new(0.5, 0.5);
-            Position = UDim2.new(1, 0, 0.5, 0);
-            Size = UDim2.new(0, 12, 0, 12);
+            Position = UDim2.new(0, PAD, 0.5, 0);
+            Size = UDim2.new(0, KNOB, 0, KNOB);
             ZIndex = 9;
-            Parent = Fill;
+            Parent = SliderOuter;
         });
         local KnobCorner = Instance.new('UICorner');
         KnobCorner.CornerRadius = UDim.new(1, 0);
@@ -2260,11 +2255,12 @@ do
         if Info.Compact then
             DisplayLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 14);
-                Position = UDim2.new(0, 0, 0, -16);
+                Position = UDim2.new(0, 0, 0, -22);
                 TextSize = 12;
                 Font = Library.FontRegular;
                 Text = '';
                 TextXAlignment = Enum.TextXAlignment.Right;
+                TextColor3 = Library.MutedColor;
                 ZIndex = 10;
                 Parent = SliderOuter;
             });
@@ -2293,13 +2289,14 @@ do
 
             local track = math.max(1, SliderInner.AbsoluteSize.X);
             if track < 2 then
-                track = Slider.MaxSize;
+                track = math.max(1, Slider.MaxSize);
             else
                 Slider.MaxSize = track;
             end
-            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, track));
-            Fill.Size = UDim2.new(0, math.clamp(X, 0, track), 1, 0);
-            HideBorderRight.Visible = false;
+
+            local X = math.clamp(math.floor(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, track) + 0.5), 0, track);
+            Fill.Size = UDim2.new(0, X, 1, 0);
+            Knob.Position = UDim2.new(0, PAD + X, 0.5, 0);
         end;
 
         function Slider:OnChanged(Func)
@@ -2311,7 +2308,6 @@ do
             if Slider.Rounding == 0 then
                 return math.floor(Value);
             end;
-
 
             return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
         end;
@@ -2336,31 +2332,46 @@ do
             Library:SafeCallback(Slider.Changed, Slider.Value);
         end;
 
-        SliderInner.InputBegan:Connect(function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
-                local mPos = Mouse.X;
-                local gPos = Fill.Size.X.Offset;
-                local Diff = mPos - (Fill.AbsolutePosition.X + gPos);
+        local function beginDrag()
+            if Library:MouseIsOverOpenedFrame() then
+                return;
+            end
 
-                while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-                    local nMPos = Mouse.X;
-                    local nX = math.clamp(gPos + (nMPos - mPos) + Diff, 0, Slider.MaxSize);
+            while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                local rel = Mouse.X - SliderInner.AbsolutePosition.X;
+                local nX = math.clamp(rel, 0, Slider.MaxSize);
+                local nValue = Slider:GetValueFromXOffset(nX);
+                local OldValue = Slider.Value;
+                Slider.Value = nValue;
 
-                    local nValue = Slider:GetValueFromXOffset(nX);
-                    local OldValue = Slider.Value;
-                    Slider.Value = nValue;
+                Slider:Display();
 
-                    Slider:Display();
-
-                    if nValue ~= OldValue then
-                        Library:SafeCallback(Slider.Callback, Slider.Value);
-                        Library:SafeCallback(Slider.Changed, Slider.Value);
-                    end;
-
-                    RenderStepped:Wait();
+                if nValue ~= OldValue then
+                    Library:SafeCallback(Slider.Callback, Slider.Value);
+                    Library:SafeCallback(Slider.Changed, Slider.Value);
                 end;
 
-                Library:AttemptSave();
+                RenderStepped:Wait();
+            end;
+
+            Library:AttemptSave();
+        end
+
+        SliderInner.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                beginDrag();
+            end;
+        end);
+
+        Knob.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                beginDrag();
+            end;
+        end);
+
+        SliderOuter.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                beginDrag();
             end;
         end);
 
@@ -2370,7 +2381,7 @@ do
         end);
 
         Slider:Display();
-        Groupbox:AddBlank(Info.BlankSize or 6);
+        Groupbox:AddBlank(Info.BlankSize or 8);
         Groupbox:Resize();
 
         Options[Idx] = Slider;
@@ -3743,7 +3754,7 @@ function Library:CreateWindow(...)
             local TabboxButtons = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 Position = UDim2.new(0, 0, 0, 0);
-                Size = UDim2.new(1, 0, 0, 32);
+                Size = UDim2.new(1, 0, 0, 30);
                 ClipsDescendants = true;
                 ZIndex = 5;
                 Parent = BoxInner;
@@ -3752,7 +3763,7 @@ function Library:CreateWindow(...)
             Library:Create('UIListLayout', {
                 FillDirection = Enum.FillDirection.Horizontal;
                 HorizontalAlignment = Enum.HorizontalAlignment.Left;
-                VerticalAlignment = Enum.VerticalAlignment.Bottom;
+                VerticalAlignment = Enum.VerticalAlignment.Center;
                 Padding = UDim.new(0, 16);
                 SortOrder = Enum.SortOrder.LayoutOrder;
                 Parent = TabboxButtons;
@@ -3762,7 +3773,7 @@ function Library:CreateWindow(...)
             local TabStripLine = Library:Create('Frame', {
                 BackgroundColor3 = Library.OutlineColor;
                 BorderSizePixel = 0;
-                Position = UDim2.new(0, 0, 0, 31);
+                Position = UDim2.new(0, 0, 0, 29);
                 Size = UDim2.new(1, 0, 0, 1);
                 ZIndex = 5;
                 Parent = BoxInner;
@@ -3792,12 +3803,13 @@ function Library:CreateWindow(...)
                 ButtonCorner.Parent = Button;
 
                 local ButtonLabel = Library:CreateLabel({
-                    Size = UDim2.new(1, -8, 1, -4);
+                    Size = UDim2.new(1, -8, 1, -3);
                     Position = UDim2.new(0, 4, 0, 0);
                     TextSize = 13;
                     Font = Library.Font;
                     Text = Name;
                     TextXAlignment = Enum.TextXAlignment.Center;
+                    TextYAlignment = Enum.TextYAlignment.Center;
                     TextColor3 = Library.MutedColor;
                     ZIndex = 7;
                     Parent = Button;
@@ -3810,7 +3822,7 @@ function Library:CreateWindow(...)
                     BorderSizePixel = 0;
                     AnchorPoint = Vector2.new(0.5, 1);
                     Position = UDim2.new(0.5, 0, 1, 0);
-                    Size = UDim2.new(0, math.max(TabW - 20, 20), 0, 6);
+                    Size = UDim2.new(0, math.max(TabW - 20, 20), 0, 5);
                     ZIndex = 8;
                     Parent = Button;
                 });
@@ -3836,8 +3848,8 @@ function Library:CreateWindow(...)
 
                 local PageRoot = Library:Create('Frame', {
                     BackgroundTransparency = 1;
-                    Position = UDim2.new(0, 0, 0, 38);
-                    Size = UDim2.new(1, 0, 1, -38);
+                    Position = UDim2.new(0, 0, 0, 36);
+                    Size = UDim2.new(1, 0, 1, -36);
                     ZIndex = 1;
                     Visible = false;
                     Parent = BoxInner;
