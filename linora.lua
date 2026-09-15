@@ -114,60 +114,109 @@ function Library:GetIcon(Name)
         return nil;
     end
     if string.find(Name, 'rbxassetid://', 1, true) == 1
-        or string.find(Name, 'rbxasset://', 1, true) == 1
-        or string.find(Name, 'http://', 1, true) == 1
-        or string.find(Name, 'https://', 1, true) == 1 then
+        or string.find(Name, 'rbxasset://', 1, true) == 1 then
         return Name;
     end
+
+    local Fallbacks = {
+        user = 'rbxassetid://81899856845503',
+        ['dollar-sign'] = 'rbxassetid://118972397587528',
+        cog = 'rbxassetid://134998527925514',
+        settings = 'rbxassetid://101463883805422',
+        car = 'rbxassetid://104209031513829',
+        swords = 'rbxassetid://89815227241465',
+        eye = 'rbxassetid://139722329189430',
+        search = 'rbxassetid://125618569555993',
+        briefcase = 'rbxassetid://79573382931819',
+        ['map-pin'] = 'rbxassetid://125589857044225',
+        sword = 'rbxassetid://89815227241465',
+        ['settings-2'] = 'rbxassetid://101463883805422',
+        ['car-front'] = 'rbxassetid://104209031513829',
+        wrench = 'rbxassetid://134998527925514',
+        crosshair = 'rbxassetid://89815227241465',
+        ['scan-eye'] = 'rbxassetid://139722329189430',
+        ['circle-user-round'] = 'rbxassetid://81899856845503',
+        ['circle-dollar-sign'] = 'rbxassetid://118972397587528',
+    };
+
     local key = string.lower(Name);
+    key = string.gsub(key, '%.png$', '');
+    key = string.gsub(key, '%.svg$', '');
     local file = Library.Icons and Library.Icons[key];
-    if not file then
-        return nil;
-    end
-    if string.find(file, 'rbxassetid://', 1, true) == 1
-        or string.find(file, 'http', 1, true) == 1 then
+    local fallback = Fallbacks[key];
+
+    if type(file) == 'string' and string.find(file, 'rbxassetid://', 1, true) == 1 then
         return file;
     end
 
-    -- Download PNG from GitHub → getcustomasset (SVG won't render in ImageLabels)
-    local url = (Library.IconBase or '') .. file;
-    local ok, asset = pcall(function()
-        local folder = 'linora_icons';
-        if makefolder and isfolder and not isfolder(folder) then
-            makefolder(folder);
-        end
-        local path = folder .. '/' .. file;
-        local http = (syn and syn.request) and function(u)
-            local r = syn.request({ Url = u, Method = 'GET' });
-            return r and r.Body;
-        end or (http_request and function(u)
-            local r = http_request({ Url = u, Method = 'GET' });
-            return r and r.Body;
-        end) or (request and function(u)
-            local r = request({ Url = u, Method = 'GET' });
-            return r and r.Body;
-        end) or (game and game.HttpGet and function(u)
-            return game:HttpGet(u);
-        end);
-
-        if writefile and http and (not isfile or not isfile(path)) then
-            local body = http(url);
-            if body and #body > 32 then
-                writefile(path, body);
+    -- Prefer GitHub PNG via getcustomasset; validate PNG + bust bad cache
+    if type(file) == 'string' and (Library.IconBase or '') ~= '' then
+        local url = Library.IconBase .. file;
+        local ok, asset = pcall(function()
+            local folder = 'linora_icons_v3';
+            if makefolder and (not isfolder or not isfolder(folder)) then
+                makefolder(folder);
             end
+            local path = folder .. '/' .. file;
+
+            local function httpGet(u)
+                if syn and syn.request then
+                    local r = syn.request({ Url = u, Method = 'GET' });
+                    return r and r.Body;
+                elseif http_request then
+                    local r = http_request({ Url = u, Method = 'GET' });
+                    return r and r.Body;
+                elseif request then
+                    local r = request({ Url = u, Method = 'GET' });
+                    return r and r.Body;
+                elseif game and game.HttpGet then
+                    return game:HttpGet(u);
+                end
+                return nil;
+            end
+
+            local function badCache()
+                if not (isfile and isfile(path)) then
+                    return true;
+                end
+                if not readfile then
+                    return false;
+                end
+                local data = readfile(path);
+                -- corrupt circle icons were ~300-550 bytes; good ones are 800+
+                if type(data) ~= 'string' or #data < 700 then
+                    return true;
+                end
+                if string.sub(data, 1, 1) == '<' then
+                    return true;
+                end
+                if string.sub(data, 1, 8) ~= '\137PNG\r\n\26\n' then
+                    return true;
+                end
+                return false;
+            end
+
+            if writefile and badCache() then
+                local body = httpGet(url);
+                if type(body) == 'string' and #body >= 700 and string.sub(body, 1, 8) == '\137PNG\r\n\26\n' then
+                    writefile(path, body);
+                end
+            end
+
+            if getcustomasset and isfile and isfile(path) and not badCache() then
+                return getcustomasset(path);
+            end
+            if getsynasset and isfile and isfile(path) and not badCache() then
+                return getsynasset(path);
+            end
+            return nil;
+        end);
+        if ok and type(asset) == 'string' and asset ~= '' then
+            return asset;
         end
-        if getcustomasset and isfile and isfile(path) then
-            return getcustomasset(path);
-        end
-        if getsynasset and isfile and isfile(path) then
-            return getsynasset(path);
-        end
-        return url;
-    end);
-    if ok and asset then
-        return asset;
     end
-    return url;
+
+    return fallback;
 end;
 
 function Library:ResolveTabIcon(Name, Icon)
@@ -2434,7 +2483,7 @@ do
             TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png',
             BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png',
 
-            ScrollBarThickness = 3,
+            ScrollBarThickness = 6,
             ScrollBarImageColor3 = Library.AccentColor,
         });
 
@@ -3441,7 +3490,7 @@ function Library:CreateWindow(...)
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
-            ScrollBarThickness = 2;
+            ScrollBarThickness = 6;
             ScrollBarImageColor3 = Library.AccentColor;
             ClipsDescendants = true;
             ZIndex = 2;
@@ -3456,7 +3505,7 @@ function Library:CreateWindow(...)
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
-            ScrollBarThickness = 2;
+            ScrollBarThickness = 6;
             ScrollBarImageColor3 = Library.AccentColor;
             ClipsDescendants = true;
             ZIndex = 2;
@@ -3714,7 +3763,7 @@ function Library:CreateWindow(...)
                         CanvasSize = UDim2.new(0, 0, 0, 0);
                         BottomImage = '';
                         TopImage = '';
-                        ScrollBarThickness = 2;
+                        ScrollBarThickness = 6;
                         ScrollBarImageColor3 = Library.AccentColor;
                         ClipsDescendants = true;
                         ZIndex = 2;
@@ -3728,7 +3777,7 @@ function Library:CreateWindow(...)
                         CanvasSize = UDim2.new(0, 0, 0, 0);
                         BottomImage = '';
                         TopImage = '';
-                        ScrollBarThickness = 2;
+                        ScrollBarThickness = 6;
                         ScrollBarImageColor3 = Library.AccentColor;
                         ClipsDescendants = true;
                         ZIndex = 2;
