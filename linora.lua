@@ -38,7 +38,7 @@ local Library = {
     RiskColor = Color3.fromRGB(255, 50, 50),
     MutedColor = Color3.fromRGB(130, 136, 148);
     SurfaceColor = Color3.fromRGB(20, 20, 22);
-    SidebarWidth = 86;
+    SidebarWidth = 96;
 
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.GothamMedium;
@@ -3397,8 +3397,8 @@ function Library:CreateWindow(...)
     local TabContainer = Library:Create('Frame', {
         BackgroundTransparency = 1;
         BorderSizePixel = 0;
-        Position = UDim2.new(0, SIDEBAR_W + 8, 0, 0);
-        Size = UDim2.new(1, -(SIDEBAR_W + 16), 1, -10);
+        Position = UDim2.new(0, SIDEBAR_W + 6, 0, 0);
+        Size = UDim2.new(1, -(SIDEBAR_W + 10), 1, -4);
         ClipsDescendants = true;
         ZIndex = 2;
         Parent = Body;
@@ -3428,7 +3428,7 @@ function Library:CreateWindow(...)
 
         local TabButton = Library:Create('TextButton', {
             BackgroundTransparency = 1;
-            Size = UDim2.new(1, -10, 0, 56);
+            Size = UDim2.new(1, -8, 0, 64);
             Text = '';
             AutoButtonColor = false;
             ZIndex = 4;
@@ -3442,7 +3442,7 @@ function Library:CreateWindow(...)
             BorderSizePixel = 0;
             AnchorPoint = Vector2.new(0.5, 0);
             Position = UDim2.new(0.5, 0, 0, 2);
-            Size = UDim2.new(0, 44, 0, 44);
+            Size = UDim2.new(0, 52, 0, 52);
             ZIndex = 4;
             Parent = TabButton;
         });
@@ -3451,8 +3451,8 @@ function Library:CreateWindow(...)
         local IconImage = Library:Create('ImageLabel', {
             BackgroundTransparency = 1;
             AnchorPoint = Vector2.new(0.5, 0);
-            Position = UDim2.new(0.5, 0, 0, 8);
-            Size = UDim2.new(0, 22, 0, 22);
+            Position = UDim2.new(0.5, 0, 0, 6);
+            Size = UDim2.new(0, 30, 0, 30);
             Image = IconId;
             ImageColor3 = Library.MutedColor;
             ScaleType = Enum.ScaleType.Fit;
@@ -3461,8 +3461,8 @@ function Library:CreateWindow(...)
         });
 
         local TabButtonLabel = Library:CreateLabel({
-            Position = UDim2.new(0, 2, 0, 34);
-            Size = UDim2.new(1, -4, 0, 16);
+            Position = UDim2.new(0, 2, 0, 40);
+            Size = UDim2.new(1, -4, 0, 18);
             Text = Name;
             TextSize = 11;
             Font = Library.FontRegular;
@@ -3488,9 +3488,10 @@ function Library:CreateWindow(...)
             Position = UDim2.new(0, 10, 0, 8);
             Size = UDim2.new(0.5, -16, 1, -16);
             CanvasSize = UDim2.new(0, 0, 0, 0);
-            BottomImage = '';
-            TopImage = '';
-            ScrollBarThickness = 6;
+            TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+            MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+            BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+            ScrollBarThickness = 0;
             ScrollBarImageColor3 = Library.AccentColor;
             ClipsDescendants = true;
             ZIndex = 2;
@@ -3500,13 +3501,15 @@ function Library:CreateWindow(...)
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0.5, 6, 0, 8);
-            Size = UDim2.new(0.5, -16, 1, -16);
+            Position = UDim2.new(0.5, 4, 0, 8);
+            Size = UDim2.new(0.5, -8, 1, -12);
             CanvasSize = UDim2.new(0, 0, 0, 0);
-            BottomImage = '';
-            TopImage = '';
-            ScrollBarThickness = 6;
+            TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+            MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+            BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+            ScrollBarThickness = 8;
             ScrollBarImageColor3 = Library.AccentColor;
+            VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
             ClipsDescendants = true;
             ZIndex = 2;
             Parent = TabFrame;
@@ -3661,8 +3664,8 @@ function Library:CreateWindow(...)
             local BoxOuter = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = FullWidth and UDim2.new(1, -16, 1, -12) or UDim2.new(1, 0, 0, 0);
-                Position = FullWidth and UDim2.new(0, 8, 0, 6) or UDim2.new(0, 0, 0, 0);
+                Size = FullWidth and UDim2.new(1, -8, 1, -6) or UDim2.new(1, 0, 0, 0);
+                Position = FullWidth and UDim2.new(0, 4, 0, 4) or UDim2.new(0, 0, 0, 0);
                 ZIndex = 2;
                 Parent = FullWidth and TabFrame or (Info.Side == 1 and LeftSide or RightSide);
             });
@@ -3759,11 +3762,12 @@ function Library:CreateWindow(...)
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
                         Position = UDim2.new(0, 0, 0, 0);
-                        Size = UDim2.new(0.5, -8, 1, 0);
+                        Size = UDim2.new(0.5, -10, 1, 0);
                         CanvasSize = UDim2.new(0, 0, 0, 0);
-                        BottomImage = '';
-                        TopImage = '';
-                        ScrollBarThickness = 6;
+                        TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+                        MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+                        BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+                        ScrollBarThickness = 0;
                         ScrollBarImageColor3 = Library.AccentColor;
                         ClipsDescendants = true;
                         ZIndex = 2;
@@ -3772,13 +3776,15 @@ function Library:CreateWindow(...)
                     PageRight = Library:Create('ScrollingFrame', {
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
-                        Position = UDim2.new(0.5, 8, 0, 0);
-                        Size = UDim2.new(0.5, -8, 1, 0);
+                        Position = UDim2.new(0.5, 4, 0, 0);
+                        Size = UDim2.new(0.5, -4, 1, 0);
                         CanvasSize = UDim2.new(0, 0, 0, 0);
-                        BottomImage = '';
-                        TopImage = '';
-                        ScrollBarThickness = 6;
+                        TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+                        MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+                        BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
+                        ScrollBarThickness = 8;
                         ScrollBarImageColor3 = Library.AccentColor;
+                        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
                         ClipsDescendants = true;
                         ZIndex = 2;
                         Parent = PageRoot;
@@ -3914,7 +3920,7 @@ function Library:CreateWindow(...)
 
                 function Page:Resize()
                     if FullWidth then
-                        BoxOuter.Size = UDim2.new(1, -16, 1, -12);
+                        BoxOuter.Size = UDim2.new(1, -8, 1, -6);
                         if PageContainer then
                             local ContentH, Count = 0, 0;
                             for _, Element in next, PageContainer:GetChildren() do
