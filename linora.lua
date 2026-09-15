@@ -34,10 +34,10 @@ local Library = {
     MainColor = Color3.fromRGB(18, 18, 20);
     BackgroundColor = Color3.fromRGB(12, 12, 14);
     AccentColor = Color3.fromRGB(55, 130, 255);
-    OutlineColor = Color3.fromRGB(36, 38, 44);
+    OutlineColor = Color3.fromRGB(28, 30, 34);
     RiskColor = Color3.fromRGB(255, 50, 50),
     MutedColor = Color3.fromRGB(140, 145, 155);
-    SurfaceColor = Color3.fromRGB(24, 24, 28);
+    SurfaceColor = Color3.fromRGB(16, 16, 18);
     SidebarWidth = 78;
 
     Black = Color3.new(0, 0, 0);
@@ -48,20 +48,43 @@ local Library = {
     DependencyBoxes = {};
     Searchables = {};
 
-    -- Lucide-style rbxasset icons (fallback: first letter)
+    -- Fluent Lucide icon pack (real rbxassetids)
+    Icons = {
+        user = 'rbxassetid://10747373176',
+        ['user-cog'] = 'rbxassetid://10747372167',
+        users = 'rbxassetid://10747373426',
+        ['dollar-sign'] = 'rbxassetid://10723343958',
+        wallet = 'rbxassetid://10747376205',
+        banknote = 'rbxassetid://10709770178',
+        cog = 'rbxassetid://10709810948',
+        settings = 'rbxassetid://10734950309',
+        ['settings-2'] = 'rbxassetid://10734950020',
+        car = 'rbxassetid://10709789810',
+        sword = 'rbxassetid://10734975486',
+        swords = 'rbxassetid://10734975692',
+        eye = 'rbxassetid://10723346959',
+        search = 'rbxassetid://10734943674',
+        home = 'rbxassetid://10723407389',
+        briefcase = 'rbxassetid://10709782662',
+        ['map-pin'] = 'rbxassetid://10734886004',
+        crosshair = 'rbxassetid://10709818534',
+        shield = 'rbxassetid://10734951847',
+        sliders = 'rbxassetid://10734963400',
+    };
+
     TabIcons = {
-        Default = 'rbxassetid://10723407389';
+        Default = 'rbxassetid://10747373176',
         Main = 'rbxassetid://10747373176',
         Player = 'rbxassetid://10747373176',
-        Money = 'rbxassetid://10709757663',
-        Misc = 'rbxassetid://10734950309',
-        Teleports = 'rbxassetid://10709791437',
-        Autofarm = 'rbxassetid://10709755703',
-        Farm = 'rbxassetid://10709755703',
-        Combat = 'rbxassetid://10709769146',
-        Visuals = 'rbxassetid://10709818534',
-        Vehicles = 'rbxassetid://10723407389',
-        Vehicle = 'rbxassetid://10723407389',
+        Money = 'rbxassetid://10723343958',
+        Misc = 'rbxassetid://10709810948',
+        Teleports = 'rbxassetid://10734886004',
+        Autofarm = 'rbxassetid://10709782662',
+        Farm = 'rbxassetid://10709782662',
+        Combat = 'rbxassetid://10734975692',
+        Visuals = 'rbxassetid://10723346959',
+        Vehicles = 'rbxassetid://10709789810',
+        Vehicle = 'rbxassetid://10709789810',
         Settings = 'rbxassetid://10734950309',
     };
 
@@ -89,11 +112,32 @@ function Library:AddStroke(Parent, Color, Thickness)
     return Stroke;
 end;
 
+function Library:GetIcon(Name)
+    if type(Name) ~= 'string' or Name == '' then
+        return nil;
+    end
+    if string.find(Name, 'rbxassetid://', 1, true) == 1 then
+        return Name;
+    end
+    local key = string.lower(Name);
+    if Library.Icons and Library.Icons[key] then
+        return Library.Icons[key];
+    end
+    return nil;
+end;
+
 function Library:ResolveTabIcon(Name, Icon)
-    if type(Icon) == 'string' and Icon ~= '' then
+    local fromIcon = Library:GetIcon(Icon);
+    if fromIcon then
+        return fromIcon;
+    end
+    if type(Icon) == 'string' and string.find(Icon, 'rbxassetid://', 1, true) == 1 then
         return Icon;
     end
-    return Library.TabIcons[Name] or Library.TabIcons.Default;
+    if Library.TabIcons[Name] then
+        return Library.TabIcons[Name];
+    end
+    return Library.TabIcons.Default;
 end;
 
 local RainbowStep = 0
@@ -2031,69 +2075,77 @@ do
         end
 
         local SliderOuter = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(0, 0, 0);
-            BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, -4, 0, 13);
+            BackgroundColor3 = Library.SurfaceColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, -4, 0, 18);
             ZIndex = 5;
             Parent = Container;
         });
+        Library:AddCorner(SliderOuter, 6);
 
         Library:AddToRegistry(SliderOuter, {
-            BorderColor3 = 'Black';
+            BackgroundColor3 = 'SurfaceColor';
         });
 
         local SliderInner = Library:Create('Frame', {
-            BackgroundColor3 = Library.MainColor;
-            BorderColor3 = Library.OutlineColor;
-            BorderMode = Enum.BorderMode.Inset;
-            Size = UDim2.new(1, 0, 1, 0);
+            BackgroundColor3 = Color3.fromRGB(22, 22, 26);
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, -8, 0, 4);
+            Position = UDim2.new(0, 4, 0.5, -2);
             ZIndex = 6;
             Parent = SliderOuter;
         });
+        Library:AddCorner(SliderInner, 2);
 
         Library:AddToRegistry(SliderInner, {
             BackgroundColor3 = 'MainColor';
-            BorderColor3 = 'OutlineColor';
         });
 
         local Fill = Library:Create('Frame', {
             BackgroundColor3 = Library.AccentColor;
-            BorderColor3 = Library.AccentColorDark;
+            BorderSizePixel = 0;
             Size = UDim2.new(0, 0, 1, 0);
             ZIndex = 7;
             Parent = SliderInner;
         });
+        Library:AddCorner(Fill, 2);
 
         Library:AddToRegistry(Fill, {
             BackgroundColor3 = 'AccentColor';
-            BorderColor3 = 'AccentColorDark';
         });
 
         local HideBorderRight = Library:Create('Frame', {
-            BackgroundColor3 = Library.AccentColor;
+            BackgroundTransparency = 1;
             BorderSizePixel = 0;
             Position = UDim2.new(1, 0, 0, 0);
             Size = UDim2.new(0, 1, 1, 0);
+            Visible = false;
             ZIndex = 8;
             Parent = Fill;
         });
 
-        Library:AddToRegistry(HideBorderRight, {
-            BackgroundColor3 = 'AccentColor';
+        local Knob = Library:Create('Frame', {
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+            BorderSizePixel = 0;
+            AnchorPoint = Vector2.new(0.5, 0.5);
+            Position = UDim2.new(1, 0, 0.5, 0);
+            Size = UDim2.new(0, 10, 0, 10);
+            ZIndex = 9;
+            Parent = Fill;
         });
+        Library:AddCorner(Knob, 5);
 
         local DisplayLabel = Library:CreateLabel({
-            Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 14;
+            Size = UDim2.new(1, -8, 1, 0);
+            Position = UDim2.new(0, 4, 0, 0);
+            TextSize = 11;
+            Font = Library.FontRegular;
             Text = 'Infinite';
-            ZIndex = 9;
-            Parent = SliderInner;
+            TextXAlignment = Enum.TextXAlignment.Right;
+            TextYAlignment = Enum.TextYAlignment.Top;
+            ZIndex = 10;
+            Parent = SliderOuter;
         });
-
-        Library:OnHighlight(SliderOuter, SliderOuter,
-            { BorderColor3 = 'AccentColor' },
-            { BorderColor3 = 'Black' }
-        );
 
         if type(Info.Tooltip) == 'string' then
             Library:AddToolTip(Info.Tooltip, SliderOuter)
@@ -2101,7 +2153,6 @@ do
 
         function Slider:UpdateColors()
             Fill.BackgroundColor3 = Library.AccentColor;
-            Fill.BorderColor3 = Library.AccentColorDark;
         end;
 
         function Slider:Display()
@@ -2115,10 +2166,13 @@ do
                 DisplayLabel.Text = string.format('%s/%s', Slider.Value .. Suffix, Slider.Max .. Suffix);
             end
 
-            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, Slider.MaxSize));
+            local track = math.max(1, SliderInner.AbsoluteSize.X);
+            if track < 2 then
+                track = Slider.MaxSize;
+            end
+            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, track));
             Fill.Size = UDim2.new(0, X, 1, 0);
-
-            HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
+            HideBorderRight.Visible = false;
         end;
 
         function Slider:OnChanged(Func)
@@ -2243,46 +2297,38 @@ do
         end;
 
         local DropdownOuter = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(0, 0, 0);
-            BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, -4, 0, 20);
+            BackgroundColor3 = Library.SurfaceColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, -4, 0, 28);
             ZIndex = 5;
             Parent = Container;
         });
+        Library:AddCorner(DropdownOuter, 6);
+        Library:AddStroke(DropdownOuter, Library.OutlineColor, 1);
 
         Library:AddToRegistry(DropdownOuter, {
-            BorderColor3 = 'Black';
+            BackgroundColor3 = 'SurfaceColor';
         });
 
         local DropdownInner = Library:Create('Frame', {
-            BackgroundColor3 = Library.MainColor;
-            BorderColor3 = Library.OutlineColor;
-            BorderMode = Enum.BorderMode.Inset;
+            BackgroundTransparency = 1;
+            BorderSizePixel = 0;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 6;
             Parent = DropdownOuter;
         });
 
         Library:AddToRegistry(DropdownInner, {
-            BackgroundColor3 = 'MainColor';
-            BorderColor3 = 'OutlineColor';
-        });
-
-        Library:Create('UIGradient', {
-            Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
-            });
-            Rotation = 90;
-            Parent = DropdownInner;
+            BackgroundColor3 = 'SurfaceColor';
         });
 
         local DropdownArrow = Library:Create('ImageLabel', {
             AnchorPoint = Vector2.new(0, 0.5);
             BackgroundTransparency = 1;
-            Position = UDim2.new(1, -16, 0.5, 0);
+            Position = UDim2.new(1, -18, 0.5, 0);
             Size = UDim2.new(0, 12, 0, 12);
             Image = 'http://www.roblox.com/asset/?id=6282522798';
+            ImageColor3 = Library.MutedColor;
             ZIndex = 8;
             Parent = DropdownInner;
         });
@@ -2299,8 +2345,8 @@ do
         });
 
         Library:OnHighlight(DropdownOuter, DropdownOuter,
-            { BorderColor3 = 'AccentColor' },
-            { BorderColor3 = 'Black' }
+            { BackgroundColor3 = 'MainColor' },
+            { BackgroundColor3 = 'SurfaceColor' }
         );
 
         if type(Info.Tooltip) == 'string' then
@@ -3110,9 +3156,30 @@ function Library:CreateWindow(...)
         Parent = Inner;
     });
 
+    local Brand = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 16, 0.5, -11);
+        Size = UDim2.new(0, 22, 0, 22);
+        ZIndex = 3;
+        Parent = Header;
+    });
+    Library:AddCorner(Brand, 6);
+    Library:AddToRegistry(Brand, { BackgroundColor3 = 'AccentColor'; });
+
+    local BrandMark = Library:CreateLabel({
+        Size = UDim2.new(1, 0, 1, 0);
+        Text = 'VC';
+        TextSize = 10;
+        Font = Library.Font;
+        TextColor3 = Color3.new(1, 1, 1);
+        ZIndex = 4;
+        Parent = Brand;
+    });
+
     local WindowLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 16, 0, 0);
-        Size = UDim2.new(0.55, -16, 1, 0);
+        Position = UDim2.new(0, 46, 0, 0);
+        Size = UDim2.new(0.55, -46, 1, 0);
         Text = Config.Title or '';
         TextSize = 15;
         Font = Library.Font;
@@ -3120,6 +3187,16 @@ function Library:CreateWindow(...)
         ZIndex = 3;
         Parent = Header;
     });
+
+    local HeaderLine = Library:Create('Frame', {
+        BackgroundColor3 = Library.OutlineColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 12, 1, -1);
+        Size = UDim2.new(1, -24, 0, 1);
+        ZIndex = 3;
+        Parent = Header;
+    });
+    Library:AddToRegistry(HeaderLine, { BackgroundColor3 = 'OutlineColor'; });
 
     local SearchShell = Library:Create('Frame', {
         AnchorPoint = Vector2.new(1, 0.5);
@@ -3134,12 +3211,14 @@ function Library:CreateWindow(...)
     Library:AddStroke(SearchShell, Library.OutlineColor, 1);
     Library:AddToRegistry(SearchShell, { BackgroundColor3 = 'SurfaceColor'; });
 
-    local SearchIcon = Library:CreateLabel({
-        Position = UDim2.new(0, 8, 0, 0);
-        Size = UDim2.new(0, 18, 1, 0);
-        Text = '⌕';
-        TextSize = 14;
-        TextColor3 = Library.MutedColor;
+    local SearchIcon = Library:Create('ImageLabel', {
+        BackgroundTransparency = 1;
+        AnchorPoint = Vector2.new(0, 0.5);
+        Position = UDim2.new(0, 9, 0.5, 0);
+        Size = UDim2.new(0, 14, 0, 14);
+        Image = Library.Icons.search;
+        ImageColor3 = Library.MutedColor;
+        ScaleType = Enum.ScaleType.Fit;
         ZIndex = 4;
         Parent = SearchShell;
     });
@@ -3304,25 +3383,12 @@ function Library:CreateWindow(...)
         local IconImage = Library:Create('ImageLabel', {
             BackgroundTransparency = 1;
             AnchorPoint = Vector2.new(0.5, 0);
-            Position = UDim2.new(0.5, 0, 0, 8);
-            Size = UDim2.new(0, 22, 0, 22);
+            Position = UDim2.new(0.5, 0, 0, 6);
+            Size = UDim2.new(0, 24, 0, 24);
             Image = IconId;
             ImageColor3 = Library.MutedColor;
             ScaleType = Enum.ScaleType.Fit;
             ZIndex = 5;
-            Parent = TabButton;
-        });
-
-        -- Letter sits behind; if the asset fails to load you still see a glyph.
-        local IconFallback = Library:CreateLabel({
-            AnchorPoint = Vector2.new(0.5, 0);
-            Position = UDim2.new(0.5, 0, 0, 8);
-            Size = UDim2.new(0, 22, 0, 22);
-            Text = string.upper(string.sub(Name, 1, 1));
-            TextSize = 15;
-            Font = Library.Font;
-            TextColor3 = Library.MutedColor;
-            ZIndex = 4;
             Parent = TabButton;
         });
 
@@ -3406,7 +3472,6 @@ function Library:CreateWindow(...)
             ActiveGlow.Visible = true;
             ActiveBar.Visible = true;
             IconImage.ImageColor3 = Library.AccentColor;
-            IconFallback.TextColor3 = Library.AccentColor;
             TabButtonLabel.TextColor3 = Library.FontColor;
             TabFrame.Visible = true;
         end;
@@ -3415,7 +3480,6 @@ function Library:CreateWindow(...)
             ActiveGlow.Visible = false;
             ActiveBar.Visible = false;
             IconImage.ImageColor3 = Library.MutedColor;
-            IconFallback.TextColor3 = Library.MutedColor;
             TabButtonLabel.TextColor3 = Library.MutedColor;
             TabFrame.Visible = false;
         end;
@@ -3432,25 +3496,20 @@ function Library:CreateWindow(...)
         function Tab:AddGroupbox(Info)
             local Groupbox = {};
 
+            -- Flat section (no heavy card border) — Vaelith-style columns
             local BoxOuter = Library:Create('Frame', {
-                BackgroundColor3 = Library.SurfaceColor;
+                BackgroundTransparency = 1;
                 BorderSizePixel = 0;
                 Size = UDim2.new(1, 0, 0, 20);
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
-            Library:AddCorner(BoxOuter, 8);
-            Library:AddStroke(BoxOuter, Library.OutlineColor, 1);
-
-            Library:AddToRegistry(BoxOuter, {
-                BackgroundColor3 = 'SurfaceColor';
-            });
 
             local BoxInner = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, -2, 1, -2);
-                Position = UDim2.new(0, 1, 0, 1);
+                Size = UDim2.new(1, 0, 1, 0);
+                Position = UDim2.new(0, 0, 0, 0);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
@@ -3463,19 +3522,16 @@ function Library:CreateWindow(...)
                 ZIndex = 5;
                 Parent = BoxInner;
             });
-
-            Library:AddToRegistry(Highlight, {
-                BackgroundColor3 = 'AccentColor';
-            });
+            Library:AddToRegistry(Highlight, { BackgroundColor3 = 'AccentColor'; });
 
             local hasTitle = type(Info.Name) == 'string' and Info.Name ~= '';
-            local headerH = hasTitle and 22 or 6;
+            local headerH = hasTitle and 20 or 4;
 
             local GroupboxLabel = Library:CreateLabel({
-                Size = UDim2.new(1, -8, 0, hasTitle and 18 or 0);
-                Position = UDim2.new(0, 8, 0, 4);
-                TextSize = 12;
-                Font = Library.FontRegular;
+                Size = UDim2.new(1, -4, 0, hasTitle and 16 or 0);
+                Position = UDim2.new(0, 2, 0, 0);
+                TextSize = 11;
+                Font = Library.Font;
                 Text = hasTitle and string.upper(Info.Name) or '';
                 TextColor3 = Library.MutedColor;
                 TextXAlignment = Enum.TextXAlignment.Left;
@@ -3486,8 +3542,8 @@ function Library:CreateWindow(...)
 
             local Container = Library:Create('Frame', {
                 BackgroundTransparency = 1;
-                Position = UDim2.new(0, 8, 0, headerH);
-                Size = UDim2.new(1, -16, 1, -headerH - 4);
+                Position = UDim2.new(0, 2, 0, headerH);
+                Size = UDim2.new(1, -4, 1, -headerH);
                 ZIndex = 1;
                 Parent = BoxInner;
             });
@@ -3495,29 +3551,26 @@ function Library:CreateWindow(...)
             Library:Create('UIListLayout', {
                 FillDirection = Enum.FillDirection.Vertical;
                 SortOrder = Enum.SortOrder.LayoutOrder;
+                Padding = UDim.new(0, 2);
                 Parent = Container;
             });
 
             function Groupbox:Resize()
                 local Size = 0;
-
                 for _, Element in next, Groupbox.Container:GetChildren() do
                     if (not Element:IsA('UIListLayout')) and Element.Visible then
                         Size = Size + Element.Size.Y.Offset;
                     end;
                 end;
-
-                BoxOuter.Size = UDim2.new(1, 0, 0, headerH + Size + 10);
+                BoxOuter.Size = UDim2.new(1, 0, 0, headerH + Size + 6);
             end;
 
             Groupbox.Container = Container;
             setmetatable(Groupbox, BaseGroupbox);
-
             Groupbox:Resize();
 
             local boxKey = hasTitle and Info.Name or ('GB_' .. tostring(BoxOuter));
             Tab.Groupboxes[boxKey] = Groupbox;
-
             return Groupbox;
         end;
 
@@ -3534,50 +3587,28 @@ function Library:CreateWindow(...)
                 Tabs = {};
             };
 
+            -- Flat page shell: tab strip on top (like Vaelith "Character"), content below
             local BoxOuter = Library:Create('Frame', {
-                BackgroundColor3 = Library.BackgroundColor;
-                BorderColor3 = Library.OutlineColor;
-                BorderMode = Enum.BorderMode.Inset;
+                BackgroundTransparency = 1;
+                BorderSizePixel = 0;
                 Size = UDim2.new(1, 0, 0, 0);
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
 
-            Library:AddToRegistry(BoxOuter, {
-                BackgroundColor3 = 'BackgroundColor';
-                BorderColor3 = 'OutlineColor';
-            });
-
             local BoxInner = Library:Create('Frame', {
-                BackgroundColor3 = Library.BackgroundColor;
-                BorderColor3 = Color3.new(0, 0, 0);
-                -- BorderMode = Enum.BorderMode.Inset;
-                Size = UDim2.new(1, -2, 1, -2);
-                Position = UDim2.new(0, 1, 0, 1);
+                BackgroundTransparency = 1;
+                BorderSizePixel = 0;
+                Size = UDim2.new(1, 0, 1, 0);
+                Position = UDim2.new(0, 0, 0, 0);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
 
-            Library:AddToRegistry(BoxInner, {
-                BackgroundColor3 = 'BackgroundColor';
-            });
-
-            local Highlight = Library:Create('Frame', {
-                BackgroundColor3 = Library.AccentColor;
-                BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 0, 2);
-                ZIndex = 10;
-                Parent = BoxInner;
-            });
-
-            Library:AddToRegistry(Highlight, {
-                BackgroundColor3 = 'AccentColor';
-            });
-
             local TabboxButtons = Library:Create('Frame', {
                 BackgroundTransparency = 1;
-                Position = UDim2.new(0, 0, 0, 1);
-                Size = UDim2.new(1, 0, 0, 18);
+                Position = UDim2.new(0, 0, 0, 0);
+                Size = UDim2.new(1, 0, 0, 28);
                 ZIndex = 5;
                 Parent = BoxInner;
             });
@@ -3585,17 +3616,30 @@ function Library:CreateWindow(...)
             Library:Create('UIListLayout', {
                 FillDirection = Enum.FillDirection.Horizontal;
                 HorizontalAlignment = Enum.HorizontalAlignment.Left;
+                VerticalAlignment = Enum.VerticalAlignment.Center;
+                Padding = UDim.new(0, 14);
                 SortOrder = Enum.SortOrder.LayoutOrder;
                 Parent = TabboxButtons;
             });
 
+            local TabStripLine = Library:Create('Frame', {
+                BackgroundColor3 = Library.OutlineColor;
+                BorderSizePixel = 0;
+                Position = UDim2.new(0, 0, 0, 28);
+                Size = UDim2.new(1, 0, 0, 1);
+                ZIndex = 5;
+                Parent = BoxInner;
+            });
+            Library:AddToRegistry(TabStripLine, { BackgroundColor3 = 'OutlineColor'; });
+
             function Tabbox:AddTab(Name)
                 local Tab = {};
+                local TabW = Library:GetTextBounds(Name, Library.Font, 13) + 4;
 
                 local Button = Library:Create('Frame', {
                     BackgroundTransparency = 1;
                     BorderSizePixel = 0;
-                    Size = UDim2.new(0.5, 0, 1, 0);
+                    Size = UDim2.new(0, TabW, 1, 0);
                     ZIndex = 6;
                     Parent = TabboxButtons;
                 });
@@ -3605,7 +3649,7 @@ function Library:CreateWindow(...)
                     TextSize = 13;
                     Font = Library.Font;
                     Text = Name;
-                    TextXAlignment = Enum.TextXAlignment.Center;
+                    TextXAlignment = Enum.TextXAlignment.Left;
                     TextColor3 = Library.MutedColor;
                     ZIndex = 7;
                     Parent = Button;
@@ -3614,22 +3658,20 @@ function Library:CreateWindow(...)
                 local Underline = Library:Create('Frame', {
                     BackgroundColor3 = Library.AccentColor;
                     BorderSizePixel = 0;
-                    AnchorPoint = Vector2.new(0.5, 1);
-                    Position = UDim2.new(0.5, 0, 1, 0);
-                    Size = UDim2.new(0.7, 0, 0, 2);
+                    AnchorPoint = Vector2.new(0, 1);
+                    Position = UDim2.new(0, 0, 1, 0);
+                    Size = UDim2.new(1, 0, 0, 2);
                     Visible = false;
                     ZIndex = 9;
                     Parent = Button;
                 });
                 Library:AddCorner(Underline, 1);
-                Library:AddToRegistry(Underline, {
-                    BackgroundColor3 = 'AccentColor';
-                });
+                Library:AddToRegistry(Underline, { BackgroundColor3 = 'AccentColor'; });
 
                 local Container = Library:Create('Frame', {
                     BackgroundTransparency = 1;
-                    Position = UDim2.new(0, 4, 0, 22);
-                    Size = UDim2.new(1, -8, 1, -26);
+                    Position = UDim2.new(0, 0, 0, 34);
+                    Size = UDim2.new(1, 0, 1, -34);
                     ZIndex = 1;
                     Visible = false;
                     Parent = BoxInner;
@@ -3638,6 +3680,7 @@ function Library:CreateWindow(...)
                 Library:Create('UIListLayout', {
                     FillDirection = Enum.FillDirection.Vertical;
                     SortOrder = Enum.SortOrder.LayoutOrder;
+                    Padding = UDim.new(0, 2);
                     Parent = Container;
                 });
 
@@ -3645,11 +3688,9 @@ function Library:CreateWindow(...)
                     for _, Other in next, Tabbox.Tabs do
                         Other:Hide();
                     end;
-
                     Container.Visible = true;
                     Underline.Visible = true;
                     ButtonLabel.TextColor3 = Library.FontColor;
-
                     Tab:Resize();
                 end;
 
@@ -3660,31 +3701,16 @@ function Library:CreateWindow(...)
                 end;
 
                 function Tab:Resize()
-                    local TabCount = 0;
-
-                    for _, Tab in next, Tabbox.Tabs do
-                        TabCount = TabCount + 1;
-                    end;
-
-                    for _, Button in next, TabboxButtons:GetChildren() do
-                        if not Button:IsA('UIListLayout') then
-                            Button.Size = UDim2.new(1 / TabCount, 0, 1, 0);
-                        end;
-                    end;
-
                     if (not Container.Visible) then
                         return;
                     end;
-
                     local Size = 0;
-
                     for _, Element in next, Tab.Container:GetChildren() do
                         if (not Element:IsA('UIListLayout')) and Element.Visible then
                             Size = Size + Element.Size.Y.Offset;
                         end;
                     end;
-
-                    BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
+                    BoxOuter.Size = UDim2.new(1, 0, 0, 34 + Size + 6);
                 end;
 
                 Button.InputBegan:Connect(function(Input)
@@ -3696,13 +3722,11 @@ function Library:CreateWindow(...)
 
                 Tab.Container = Container;
                 Tabbox.Tabs[Name] = Tab;
-
                 setmetatable(Tab, BaseGroupbox);
 
-                Tab:AddBlank(3);
+                Tab:AddBlank(2);
                 Tab:Resize();
 
-                -- Show first tab (number is 2 cus of the UIListLayout that also sits in that instance)
                 if #TabboxButtons:GetChildren() == 2 then
                     Tab:Show();
                 end;
@@ -3711,7 +3735,6 @@ function Library:CreateWindow(...)
             end;
 
             Tab.Tabboxes[Info.Name or ''] = Tabbox;
-
             return Tabbox;
         end;
 
