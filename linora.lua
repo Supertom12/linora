@@ -156,7 +156,7 @@ function Library:GetIcon(Name)
     -- Prefer workspace PNG, then cached download, then Nebula rbxassetid
     if type(file) == 'string' then
         local ok, asset = pcall(function()
-            local folder = 'linora_icons_v4';
+            local folder = 'linora_icons_v5';
             if makefolder and (not isfolder or not isfolder(folder)) then
                 makefolder(folder);
             end
@@ -3451,7 +3451,7 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             AnchorPoint = Vector2.new(0.5, 0);
             Position = UDim2.new(0.5, 0, 0, 8);
-            Size = UDim2.new(0, 20, 0, 20);
+            Size = UDim2.new(0, 22, 0, 22);
             Image = IconId;
             ImageColor3 = Library.MutedColor;
             ScaleType = Enum.ScaleType.Fit;
@@ -3799,14 +3799,16 @@ function Library:CreateWindow(...)
                     Parent = BoxInner;
                 });
 
-                local PageLeft, PageRight, PageContainer
+                local PageLeft, PageRight, PageContainer, PageScroll
+                local syncFullPageCanvas
 
                 if FullWidth then
-                    PageLeft = Library:Create('ScrollingFrame', {
+                    -- One scroll for the whole Main page (both columns)
+                    PageScroll = Library:Create('ScrollingFrame', {
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
                         Position = UDim2.new(0, 0, 0, 0);
-                        Size = UDim2.new(0.5, -10, 1, -28);
+                        Size = UDim2.new(1, 0, 1, -28);
                         CanvasSize = UDim2.new(0, 0, 0, 0);
                         TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
@@ -3819,33 +3821,60 @@ function Library:CreateWindow(...)
                         ZIndex = 2;
                         Parent = PageRoot;
                     });
-                    PageRight = Library:Create('ScrollingFrame', {
+
+                    local PageInner = Library:Create('Frame', {
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
-                        Position = UDim2.new(0.5, 4, 0, 0);
-                        Size = UDim2.new(0.5, -4, 1, -28);
-                        CanvasSize = UDim2.new(0, 0, 0, 0);
-                        TopImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-                        MidImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-                        BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
-                        ScrollBarThickness = 5;
-                        ScrollBarImageColor3 = Library.AccentColor;
-                        ScrollBarImageTransparency = 0;
-                        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
-                        ClipsDescendants = true;
+                        Size = UDim2.new(1, -8, 0, 0);
+                        Position = UDim2.new(0, 0, 0, 0);
                         ZIndex = 2;
-                        Parent = PageRoot;
+                        Parent = PageScroll;
                     });
+
+                    -- Left column nudged right so Local Player mods aren't flush
+                    PageLeft = Library:Create('Frame', {
+                        BackgroundTransparency = 1;
+                        BorderSizePixel = 0;
+                        Position = UDim2.new(0, 18, 0, 0);
+                        Size = UDim2.new(0.5, -28, 0, 0);
+                        ZIndex = 2;
+                        Parent = PageInner;
+                    });
+                    PageRight = Library:Create('Frame', {
+                        BackgroundTransparency = 1;
+                        BorderSizePixel = 0;
+                        Position = UDim2.new(0.5, 8, 0, 0);
+                        Size = UDim2.new(0.5, -18, 0, 0);
+                        ZIndex = 2;
+                        Parent = PageInner;
+                    });
+
+                    syncFullPageCanvas = function()
+                        local leftH = 0;
+                        local rightH = 0;
+                        local leftLayout = PageLeft:FindFirstChildOfClass('UIListLayout');
+                        local rightLayout = PageRight:FindFirstChildOfClass('UIListLayout');
+                        if leftLayout then
+                            leftH = leftLayout.AbsoluteContentSize.Y;
+                        end
+                        if rightLayout then
+                            rightH = rightLayout.AbsoluteContentSize.Y;
+                        end
+                        local h = math.max(leftH, rightH) + 24;
+                        PageLeft.Size = UDim2.new(0.5, -28, 0, leftH);
+                        PageRight.Size = UDim2.new(0.5, -18, 0, rightH);
+                        PageInner.Size = UDim2.new(1, -8, 0, h);
+                        PageScroll.CanvasSize = UDim2.fromOffset(0, h + 32);
+                    end
+
                     for _, Side in next, { PageLeft, PageRight } do
-                        Library:Create('UIListLayout', {
+                        local layout = Library:Create('UIListLayout', {
                             Padding = UDim.new(0, 14);
                             FillDirection = Enum.FillDirection.Vertical;
                             SortOrder = Enum.SortOrder.LayoutOrder;
                             Parent = Side;
                         });
-                        Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-                            Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 48);
-                        end);
+                        layout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(syncFullPageCanvas);
                     end
 
                     function Page:AddGroupbox(GbInfo)
@@ -3903,6 +3932,7 @@ function Library:CreateWindow(...)
                                 ContentH = ContentH + ((Count - 1) * 4);
                             end;
                             BoxOuter.Size = UDim2.new(1, 0, 0, math.max(headerH + ContentH + 8, 28));
+                            syncFullPageCanvas();
                         end;
                         Groupbox.Container = Container;
                         setmetatable(Groupbox, BaseGroupbox);
@@ -3932,6 +3962,15 @@ function Library:CreateWindow(...)
                     });
                     Page.Container = PageContainer;
                     setmetatable(Page, BaseGroupbox);
+
+                    -- Keep single-page canvas in sync when left column container grows
+                    local pageContainerLayout = PageContainer:FindFirstChildOfClass('UIListLayout');
+                    if pageContainerLayout then
+                        pageContainerLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+                            PageContainer.Size = UDim2.new(1, 0, 0, pageContainerLayout.AbsoluteContentSize.Y);
+                            syncFullPageCanvas();
+                        end);
+                    end
                 else
                     PageContainer = Library:Create('Frame', {
                         BackgroundTransparency = 1;
@@ -3984,6 +4023,9 @@ function Library:CreateWindow(...)
                                 ContentH = ContentH + ((Count - 1) * 4);
                             end;
                             PageContainer.Size = UDim2.new(1, 0, 0, ContentH);
+                        end
+                        if syncFullPageCanvas then
+                            syncFullPageCanvas();
                         end
                         return;
                     end;
