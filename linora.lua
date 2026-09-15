@@ -48,45 +48,45 @@ local Library = {
     DependencyBoxes = {};
     Searchables = {};
 
-    -- Phosphor Filled (Nebula) — solid icons, tinted via ImageColor3
+    -- Local / GitHub PNG icons (Nebula Lucide exports + briefcase)
     IconBase = 'https://raw.githubusercontent.com/Supertom12/linora/main/';
     Icons = {
-        user = 'rbxassetid://92109577763657',
-        ['dollar-sign'] = 'rbxassetid://92492175987422',
-        cog = 'rbxassetid://128863007232463',
-        settings = 'rbxassetid://128863007232463',
-        car = 'rbxassetid://105893330807278',
-        swords = 'rbxassetid://118652945169395',
-        sword = 'rbxassetid://118652945169395',
-        eye = 'rbxassetid://91148908779390',
-        search = 'rbxassetid://97766305654243',
-        briefcase = 'rbxassetid://115927013358481',
-        ['map-pin'] = 'rbxassetid://134492119148232',
-        ['settings-2'] = 'rbxassetid://138683035860008',
-        ['car-front'] = 'rbxassetid://105893330807278',
-        wrench = 'rbxassetid://87682633335385',
-        crosshair = 'rbxassetid://70953410348206',
-        ['scan-eye'] = 'rbxassetid://91148908779390',
-        ['circle-user-round'] = 'rbxassetid://79064078939950',
-        ['circle-dollar-sign'] = 'rbxassetid://92492175987422',
-        ['magnifying-glass'] = 'rbxassetid://97766305654243',
-        ['gear-six'] = 'rbxassetid://138683035860008',
+        user = 'user.png',
+        ['dollar-sign'] = 'briefcase.png',
+        cog = 'cog.png',
+        settings = 'settings.png',
+        car = 'car.png',
+        swords = 'swords.png',
+        sword = 'swords.png',
+        eye = 'eye.png',
+        search = 'search.png',
+        briefcase = 'briefcase.png',
+        ['map-pin'] = 'map-pin.png',
+        ['settings-2'] = 'settings.png',
+        ['car-front'] = 'car.png',
+        wrench = 'cog.png',
+        crosshair = 'swords.png',
+        ['scan-eye'] = 'eye.png',
+        ['circle-user-round'] = 'user.png',
+        ['circle-dollar-sign'] = 'briefcase.png',
+        ['magnifying-glass'] = 'search.png',
+        ['gear-six'] = 'settings.png',
     };
 
     TabIcons = {
-        Default = 'user',
-        Main = 'user',
-        Player = 'user',
-        Money = 'briefcase',
-        Misc = 'map-pin',
-        Teleports = 'map-pin',
-        Autofarm = 'briefcase',
-        Farm = 'briefcase',
-        Combat = 'sword',
-        Visuals = 'eye',
-        Vehicles = 'car',
-        Vehicle = 'car',
-        Settings = 'settings',
+        Default = 'user.png',
+        Main = 'user.png',
+        Player = 'user.png',
+        Money = 'briefcase.png',
+        Misc = 'map-pin.png',
+        Teleports = 'map-pin.png',
+        Autofarm = 'briefcase.png',
+        Farm = 'briefcase.png',
+        Combat = 'swords.png',
+        Visuals = 'eye.png',
+        Vehicles = 'car.png',
+        Vehicle = 'car.png',
+        Settings = 'settings.png',
     };
 
     Signals = {};
@@ -121,26 +121,26 @@ function Library:GetIcon(Name)
     end
 
     local Fallbacks = {
-        user = 'rbxassetid://92109577763657',
-        ['dollar-sign'] = 'rbxassetid://92492175987422',
-        cog = 'rbxassetid://128863007232463',
-        settings = 'rbxassetid://128863007232463',
-        car = 'rbxassetid://105893330807278',
-        swords = 'rbxassetid://118652945169395',
-        sword = 'rbxassetid://118652945169395',
-        eye = 'rbxassetid://91148908779390',
-        search = 'rbxassetid://97766305654243',
-        briefcase = 'rbxassetid://115927013358481',
+        user = 'rbxassetid://81899856845503',
+        ['dollar-sign'] = 'rbxassetid://79573382931819',
+        cog = 'rbxassetid://134998527925514',
+        settings = 'rbxassetid://101463883805422',
+        car = 'rbxassetid://104209031513829',
+        swords = 'rbxassetid://89815227241465',
+        sword = 'rbxassetid://89815227241465',
+        eye = 'rbxassetid://139722329189430',
+        search = 'rbxassetid://125618569555993',
+        briefcase = 'rbxassetid://79573382931819',
         ['map-pin'] = 'rbxassetid://134492119148232',
-        ['settings-2'] = 'rbxassetid://138683035860008',
-        ['car-front'] = 'rbxassetid://105893330807278',
-        wrench = 'rbxassetid://87682633335385',
-        crosshair = 'rbxassetid://70953410348206',
-        ['scan-eye'] = 'rbxassetid://91148908779390',
-        ['circle-user-round'] = 'rbxassetid://79064078939950',
-        ['circle-dollar-sign'] = 'rbxassetid://92492175987422',
-        ['magnifying-glass'] = 'rbxassetid://97766305654243',
-        ['gear-six'] = 'rbxassetid://138683035860008',
+        ['settings-2'] = 'rbxassetid://101463883805422',
+        ['car-front'] = 'rbxassetid://104209031513829',
+        wrench = 'rbxassetid://134998527925514',
+        crosshair = 'rbxassetid://89815227241465',
+        ['scan-eye'] = 'rbxassetid://139722329189430',
+        ['circle-user-round'] = 'rbxassetid://81899856845503',
+        ['circle-dollar-sign'] = 'rbxassetid://79573382931819',
+        ['magnifying-glass'] = 'rbxassetid://125618569555993',
+        ['gear-six'] = 'rbxassetid://101463883805422',
     };
 
     local key = string.lower(Name);
@@ -153,11 +153,10 @@ function Library:GetIcon(Name)
         return file;
     end
 
-    -- Prefer GitHub PNG via getcustomasset; validate PNG + bust bad cache
-    if type(file) == 'string' and (Library.IconBase or '') ~= '' then
-        local url = Library.IconBase .. file;
+    -- Prefer workspace PNG, then cached download, then Nebula rbxassetid
+    if type(file) == 'string' then
         local ok, asset = pcall(function()
-            local folder = 'linora_icons_v3';
+            local folder = 'linora_icons_v4';
             if makefolder and (not isfolder or not isfolder(folder)) then
                 makefolder(folder);
             end
@@ -179,6 +178,13 @@ function Library:GetIcon(Name)
                 return nil;
             end
 
+            local function isGoodPng(data)
+                return type(data) == 'string'
+                    and #data >= 700
+                    and string.sub(data, 1, 1) ~= '<'
+                    and string.sub(data, 1, 8) == '\137PNG\r\n\26\n';
+            end
+
             local function badCache()
                 if not (isfile and isfile(path)) then
                     return true;
@@ -186,23 +192,30 @@ function Library:GetIcon(Name)
                 if not readfile then
                     return false;
                 end
-                local data = readfile(path);
-                -- corrupt circle icons were ~300-550 bytes; good ones are 800+
-                if type(data) ~= 'string' or #data < 700 then
-                    return true;
-                end
-                if string.sub(data, 1, 1) == '<' then
-                    return true;
-                end
-                if string.sub(data, 1, 8) ~= '\137PNG\r\n\26\n' then
-                    return true;
-                end
-                return false;
+                return not isGoodPng(readfile(path));
             end
 
+            -- Seed cache from local repo icons first
             if writefile and badCache() then
-                local body = httpGet(url);
-                if type(body) == 'string' and #body >= 700 and string.sub(body, 1, 8) == '\137PNG\r\n\26\n' then
+                local locals = {
+                    'rivals/icons/' .. file,
+                    'icons/' .. file,
+                    'vicecity/icons/' .. file,
+                };
+                for _, lp in next, locals do
+                    if isfile and isfile(lp) and readfile then
+                        local body = readfile(lp);
+                        if isGoodPng(body) then
+                            writefile(path, body);
+                            break;
+                        end
+                    end
+                end
+            end
+
+            if writefile and badCache() and (Library.IconBase or '') ~= '' then
+                local body = httpGet(Library.IconBase .. file);
+                if isGoodPng(body) then
                     writefile(path, body);
                 end
             end
@@ -1549,11 +1562,12 @@ do
         local Container = Groupbox.Container;
 
         local TextLabel = Library:CreateLabel({
-            Size = UDim2.new(1, -4, 0, 15);
-            TextSize = 14;
+            Size = UDim2.new(1, -8, 0, 18);
+            TextSize = 13;
             Text = Text;
             TextWrapped = DoesWrap or false,
             TextXAlignment = Enum.TextXAlignment.Left;
+            TextTruncate = Enum.TextTruncate.None;
             ZIndex = 5;
             Parent = Container;
         });
@@ -3277,7 +3291,7 @@ function Library:CreateWindow(...)
         BackgroundColor3 = Library.SurfaceColor;
         BorderSizePixel = 0;
         Position = UDim2.new(1, -16, 0.5, 0);
-        Size = UDim2.new(0, 340, 0, 20);
+        Size = UDim2.new(0, 390, 0, 26);
         ZIndex = 3;
         Parent = Header;
     });
@@ -3289,7 +3303,7 @@ function Library:CreateWindow(...)
         BackgroundTransparency = 1;
         AnchorPoint = Vector2.new(0, 0.5);
         Position = UDim2.new(0, 10, 0.5, 0);
-        Size = UDim2.new(0, 12, 0, 12);
+        Size = UDim2.new(0, 14, 0, 14);
         Image = Library:GetIcon('search');
         ImageColor3 = Library.MutedColor;
         ScaleType = Enum.ScaleType.Fit;
@@ -3303,11 +3317,11 @@ function Library:CreateWindow(...)
         Font = Library.FontRegular;
         PlaceholderColor3 = Library.MutedColor;
         PlaceholderText = 'Search...';
-        Position = UDim2.new(0, 28, 0, 0);
-        Size = UDim2.new(1, -34, 1, 0);
+        Position = UDim2.new(0, 30, 0, 0);
+        Size = UDim2.new(1, -38, 1, 0);
         Text = '';
         TextColor3 = Library.FontColor;
-        TextSize = 11;
+        TextSize = 12;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 4;
         Parent = SearchShell;
@@ -3494,7 +3508,7 @@ function Library:CreateWindow(...)
             BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
             ScrollBarThickness = 5;
             ScrollBarImageColor3 = Library.AccentColor;
-            ScrollBarImageTransparency = 0.7;
+            ScrollBarImageTransparency = 0;
             VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
             ClipsDescendants = true;
             ZIndex = 2;
@@ -3512,7 +3526,7 @@ function Library:CreateWindow(...)
             BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
             ScrollBarThickness = 5;
             ScrollBarImageColor3 = Library.AccentColor;
-            ScrollBarImageTransparency = 0.7;
+            ScrollBarImageTransparency = 0;
             VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
             ClipsDescendants = true;
             ZIndex = 2;
@@ -3799,7 +3813,7 @@ function Library:CreateWindow(...)
                         BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         ScrollBarThickness = 5;
                         ScrollBarImageColor3 = Library.AccentColor;
-                        ScrollBarImageTransparency = 0.7;
+                        ScrollBarImageTransparency = 0;
                         VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
                         ClipsDescendants = true;
                         ZIndex = 2;
@@ -3816,7 +3830,7 @@ function Library:CreateWindow(...)
                         BottomImage = 'rbxasset://textures/ui/Scroll/scroll-middle.png';
                         ScrollBarThickness = 5;
                         ScrollBarImageColor3 = Library.AccentColor;
-                        ScrollBarImageTransparency = 0.7;
+                        ScrollBarImageTransparency = 0;
                         VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar;
                         ClipsDescendants = true;
                         ZIndex = 2;
