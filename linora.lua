@@ -48,69 +48,43 @@ local Library = {
     DependencyBoxes = {};
     Searchables = {};
 
-    -- Nebula Icon Library · Lucide (https://github.com/Nebula-Softworks/Nebula-Icon-Library)
+    -- Icons from https://github.com/Supertom12/linora (PNG)
+    IconBase = 'https://raw.githubusercontent.com/Supertom12/linora/main/';
     Icons = {
-        -- people
-        user = 'rbxassetid://81899856845503',
-        users = 'rbxassetid://109023655602096',
-        ['circle-user'] = 'rbxassetid://73363870264217',
-        ['circle-user-round'] = 'rbxassetid://103422319407938',
-        -- money
-        ['dollar-sign'] = 'rbxassetid://118972397587528',
-        ['circle-dollar-sign'] = 'rbxassetid://103021845191343',
-        coins = 'rbxassetid://128784569032326',
-        ['hand-coins'] = 'rbxassetid://83908670424159',
-        wallet = 'rbxassetid://82693664006746',
-        banknote = 'rbxassetid://83624352345036',
-        -- tools / settings
-        cog = 'rbxassetid://134998527925514',
-        settings = 'rbxassetid://101463883805422',
-        ['settings-2'] = 'rbxassetid://75339943202126',
-        ['sliders-horizontal'] = 'rbxassetid://104021219611587',
-        wrench = 'rbxassetid://108764185264619',
-        ['file-cog'] = 'rbxassetid://89816062085634',
-        -- vehicles
-        car = 'rbxassetid://104209031513829',
-        ['car-front'] = 'rbxassetid://108397050137008',
-        truck = 'rbxassetid://102380610139245',
-        -- combat / visuals
-        sword = 'rbxassetid://75020726675544',
-        swords = 'rbxassetid://89815227241465',
-        crosshair = 'rbxassetid://114929017287945',
-        target = 'rbxassetid://81035867308138',
-        eye = 'rbxassetid://139722329189430',
-        ['scan-eye'] = 'rbxassetid://97734789454128',
-        binoculars = 'rbxassetid://114841582615801',
-        -- nav / misc
-        search = 'rbxassetid://125618569555993',
-        briefcase = 'rbxassetid://79573382931819',
-        ['map-pin'] = 'rbxassetid://125589857044225',
-        map = 'rbxassetid://108279805507438',
-        compass = 'rbxassetid://117355392623233',
-        navigation = 'rbxassetid://90646250576973',
-        shield = 'rbxassetid://84528813312016',
-        ['shield-check'] = 'rbxassetid://83449656859552',
-        keyboard = 'rbxassetid://78021479821645',
-        ['gamepad-2'] = 'rbxassetid://123513783706820',
-        ['layout-dashboard'] = 'rbxassetid://109242208940047',
-        zap = 'rbxassetid://99546940565021',
-        sparkles = 'rbxassetid://130602425201313',
+        user = 'user.png',
+        ['dollar-sign'] = 'dollar-sign.png',
+        cog = 'cog.png',
+        settings = 'settings.png',
+        car = 'car.png',
+        swords = 'swords.png',
+        eye = 'eye.png',
+        search = 'search.png',
+        briefcase = 'briefcase.png',
+        ['map-pin'] = 'map-pin.png',
+        sword = 'swords.png',
+        ['settings-2'] = 'settings.png',
+        ['car-front'] = 'car.png',
+        wrench = 'cog.png',
+        crosshair = 'swords.png',
+        ['scan-eye'] = 'eye.png',
+        ['circle-user-round'] = 'user.png',
+        ['circle-dollar-sign'] = 'dollar-sign.png',
     };
 
     TabIcons = {
-        Default = 'rbxassetid://81899856845503',
-        Main = 'rbxassetid://81899856845503',
-        Player = 'rbxassetid://81899856845503',
-        Money = 'rbxassetid://118972397587528',
-        Misc = 'rbxassetid://125589857044225',
-        Teleports = 'rbxassetid://125589857044225',
-        Autofarm = 'rbxassetid://79573382931819',
-        Farm = 'rbxassetid://79573382931819',
-        Combat = 'rbxassetid://89815227241465',
-        Visuals = 'rbxassetid://139722329189430',
-        Vehicles = 'rbxassetid://104209031513829',
-        Vehicle = 'rbxassetid://104209031513829',
-        Settings = 'rbxassetid://101463883805422',
+        Default = 'user.png',
+        Main = 'user.png',
+        Player = 'user.png',
+        Money = 'dollar-sign.png',
+        Misc = 'map-pin.png',
+        Teleports = 'map-pin.png',
+        Autofarm = 'briefcase.png',
+        Farm = 'briefcase.png',
+        Combat = 'swords.png',
+        Visuals = 'eye.png',
+        Vehicles = 'car.png',
+        Vehicle = 'car.png',
+        Settings = 'settings.png',
     };
 
     Signals = {};
@@ -118,10 +92,8 @@ local Library = {
 };
 
 function Library:AddCorner(Parent, Radius)
-    return Library:Create('UICorner', {
-        CornerRadius = UDim.new(0, Radius or 8);
-        Parent = Parent;
-    });
+    -- Flat Vaelith look: no rounded corners
+    return nil;
 end;
 
 function Library:AddStroke(Parent, Color, Thickness)
@@ -141,14 +113,61 @@ function Library:GetIcon(Name)
     if type(Name) ~= 'string' or Name == '' then
         return nil;
     end
-    if string.find(Name, 'rbxassetid://', 1, true) == 1 then
+    if string.find(Name, 'rbxassetid://', 1, true) == 1
+        or string.find(Name, 'rbxasset://', 1, true) == 1
+        or string.find(Name, 'http://', 1, true) == 1
+        or string.find(Name, 'https://', 1, true) == 1 then
         return Name;
     end
     local key = string.lower(Name);
-    if Library.Icons and Library.Icons[key] then
-        return Library.Icons[key];
+    local file = Library.Icons and Library.Icons[key];
+    if not file then
+        return nil;
     end
-    return nil;
+    if string.find(file, 'rbxassetid://', 1, true) == 1
+        or string.find(file, 'http', 1, true) == 1 then
+        return file;
+    end
+
+    -- Download PNG from GitHub → getcustomasset (SVG won't render in ImageLabels)
+    local url = (Library.IconBase or '') .. file;
+    local ok, asset = pcall(function()
+        local folder = 'linora_icons';
+        if makefolder and isfolder and not isfolder(folder) then
+            makefolder(folder);
+        end
+        local path = folder .. '/' .. file;
+        local http = (syn and syn.request) and function(u)
+            local r = syn.request({ Url = u, Method = 'GET' });
+            return r and r.Body;
+        end or (http_request and function(u)
+            local r = http_request({ Url = u, Method = 'GET' });
+            return r and r.Body;
+        end) or (request and function(u)
+            local r = request({ Url = u, Method = 'GET' });
+            return r and r.Body;
+        end) or (game and game.HttpGet and function(u)
+            return game:HttpGet(u);
+        end);
+
+        if writefile and http and (not isfile or not isfile(path)) then
+            local body = http(url);
+            if body and #body > 32 then
+                writefile(path, body);
+            end
+        end
+        if getcustomasset and isfile and isfile(path) then
+            return getcustomasset(path);
+        end
+        if getsynasset and isfile and isfile(path) then
+            return getsynasset(path);
+        end
+        return url;
+    end);
+    if ok and asset then
+        return asset;
+    end
+    return url;
 end;
 
 function Library:ResolveTabIcon(Name, Icon)
@@ -156,13 +175,16 @@ function Library:ResolveTabIcon(Name, Icon)
     if fromIcon then
         return fromIcon;
     end
-    if type(Icon) == 'string' and string.find(Icon, 'rbxassetid://', 1, true) == 1 then
+    if type(Icon) == 'string' and (
+        string.find(Icon, 'rbxassetid://', 1, true) == 1
+        or string.find(Icon, 'http', 1, true) == 1
+    ) then
         return Icon;
     end
     if Library.TabIcons[Name] then
-        return Library.TabIcons[Name];
+        return Library:GetIcon(Library.TabIcons[Name]) or Library:GetIcon('user');
     end
-    return Library.TabIcons.Default;
+    return Library:GetIcon('user');
 end;
 
 local RainbowStep = 0
@@ -3221,7 +3243,7 @@ function Library:CreateWindow(...)
         AnchorPoint = Vector2.new(0, 0.5);
         Position = UDim2.new(0, 10, 0.5, 0);
         Size = UDim2.new(0, 12, 0, 12);
-        Image = Library.Icons.search;
+        Image = Library:GetIcon('search');
         ImageColor3 = Library.MutedColor;
         ScaleType = Enum.ScaleType.Fit;
         ZIndex = 4;
@@ -3579,20 +3601,28 @@ function Library:CreateWindow(...)
                 Tabs = {};
             };
 
-            -- Flat tab strip + content (no card chrome)
+            local FullWidth = Info.FullWidth == true or Info.Side == 0;
+            if FullWidth then
+                -- Hide default columns; pages own their own left/right
+                LeftSide.Visible = false;
+                RightSide.Visible = false;
+            end
+
+            -- Flat full-width (or column) tab strip — divider spans the strip width
             local BoxOuter = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 0, 0);
+                Size = FullWidth and UDim2.new(1, -16, 1, -12) or UDim2.new(1, 0, 0, 0);
+                Position = FullWidth and UDim2.new(0, 8, 0, 6) or UDim2.new(0, 0, 0, 0);
                 ZIndex = 2;
-                Parent = Info.Side == 1 and LeftSide or RightSide;
+                Parent = FullWidth and TabFrame or (Info.Side == 1 and LeftSide or RightSide);
             });
 
             local BoxInner = Library:Create('Frame', {
                 BackgroundTransparency = 1;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, -4, 1, 0);
-                Position = UDim2.new(0, 2, 0, 0);
+                Size = UDim2.new(1, 0, 1, 0);
+                Position = UDim2.new(0, 0, 0, 0);
                 ZIndex = 4;
                 Parent = BoxOuter;
             });
@@ -3614,6 +3644,7 @@ function Library:CreateWindow(...)
                 Parent = TabboxButtons;
             });
 
+            -- Divider runs the full content width
             local TabStripLine = Library:Create('Frame', {
                 BackgroundColor3 = Library.OutlineColor;
                 BorderSizePixel = 0;
@@ -3625,7 +3656,11 @@ function Library:CreateWindow(...)
             Library:AddToRegistry(TabStripLine, { BackgroundColor3 = 'OutlineColor'; });
 
             function Tabbox:AddTab(Name)
-                local Tab = {};
+                local Page = {
+                    Groupboxes = {};
+                    Tabboxes = {};
+                    Name = Name;
+                };
                 local TabW = Library:GetTextBounds(Name, Library.Font, 13) + 4;
 
                 local Button = Library:Create('Frame', {
@@ -3659,7 +3694,7 @@ function Library:CreateWindow(...)
                 });
                 Library:AddToRegistry(Underline, { BackgroundColor3 = 'AccentColor'; });
 
-                local Container = Library:Create('Frame', {
+                local PageRoot = Library:Create('Frame', {
                     BackgroundTransparency = 1;
                     Position = UDim2.new(0, 0, 0, 34);
                     Size = UDim2.new(1, 0, 1, -34);
@@ -3668,36 +3703,189 @@ function Library:CreateWindow(...)
                     Parent = BoxInner;
                 });
 
-                Library:Create('UIListLayout', {
-                    FillDirection = Enum.FillDirection.Vertical;
-                    SortOrder = Enum.SortOrder.LayoutOrder;
-                    Padding = UDim.new(0, 4);
-                    Parent = Container;
-                });
+                local PageLeft, PageRight, PageContainer
 
-                function Tab:Show()
+                if FullWidth then
+                    PageLeft = Library:Create('ScrollingFrame', {
+                        BackgroundTransparency = 1;
+                        BorderSizePixel = 0;
+                        Position = UDim2.new(0, 0, 0, 0);
+                        Size = UDim2.new(0.5, -8, 1, 0);
+                        CanvasSize = UDim2.new(0, 0, 0, 0);
+                        BottomImage = '';
+                        TopImage = '';
+                        ScrollBarThickness = 2;
+                        ScrollBarImageColor3 = Library.AccentColor;
+                        ClipsDescendants = true;
+                        ZIndex = 2;
+                        Parent = PageRoot;
+                    });
+                    PageRight = Library:Create('ScrollingFrame', {
+                        BackgroundTransparency = 1;
+                        BorderSizePixel = 0;
+                        Position = UDim2.new(0.5, 8, 0, 0);
+                        Size = UDim2.new(0.5, -8, 1, 0);
+                        CanvasSize = UDim2.new(0, 0, 0, 0);
+                        BottomImage = '';
+                        TopImage = '';
+                        ScrollBarThickness = 2;
+                        ScrollBarImageColor3 = Library.AccentColor;
+                        ClipsDescendants = true;
+                        ZIndex = 2;
+                        Parent = PageRoot;
+                    });
+                    for _, Side in next, { PageLeft, PageRight } do
+                        Library:Create('UIListLayout', {
+                            Padding = UDim.new(0, 14);
+                            FillDirection = Enum.FillDirection.Vertical;
+                            SortOrder = Enum.SortOrder.LayoutOrder;
+                            Parent = Side;
+                        });
+                        Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+                            Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 16);
+                        end);
+                    end
+
+                    function Page:AddGroupbox(GbInfo)
+                        local Groupbox = {};
+                        local BoxOuter = Library:Create('Frame', {
+                            BackgroundTransparency = 1;
+                            BorderSizePixel = 0;
+                            Size = UDim2.new(1, 0, 0, 20);
+                            ZIndex = 2;
+                            Parent = GbInfo.Side == 1 and PageLeft or PageRight;
+                        });
+                        local BoxInner = Library:Create('Frame', {
+                            BackgroundTransparency = 1;
+                            BorderSizePixel = 0;
+                            Size = UDim2.new(1, -4, 1, 0);
+                            Position = UDim2.new(0, 2, 0, 0);
+                            ZIndex = 4;
+                            Parent = BoxOuter;
+                        });
+                        local hasTitle = type(GbInfo.Name) == 'string' and GbInfo.Name ~= '';
+                        local headerH = hasTitle and 22 or 2;
+                        Library:CreateLabel({
+                            Size = UDim2.new(1, 0, 0, hasTitle and 18 or 0);
+                            TextSize = 13;
+                            Font = Library.Font;
+                            Text = hasTitle and GbInfo.Name or '';
+                            TextColor3 = Library.FontColor;
+                            TextXAlignment = Enum.TextXAlignment.Left;
+                            Visible = hasTitle;
+                            ZIndex = 5;
+                            Parent = BoxInner;
+                        });
+                        local Container = Library:Create('Frame', {
+                            BackgroundTransparency = 1;
+                            Position = UDim2.new(0, 0, 0, headerH);
+                            Size = UDim2.new(1, 0, 1, -headerH);
+                            ZIndex = 1;
+                            Parent = BoxInner;
+                        });
+                        Library:Create('UIListLayout', {
+                            FillDirection = Enum.FillDirection.Vertical;
+                            SortOrder = Enum.SortOrder.LayoutOrder;
+                            Padding = UDim.new(0, 4);
+                            Parent = Container;
+                        });
+                        function Groupbox:Resize()
+                            local ContentH, Count = 0, 0;
+                            for _, Element in next, Groupbox.Container:GetChildren() do
+                                if (not Element:IsA('UIListLayout')) and Element.Visible then
+                                    ContentH = ContentH + Element.Size.Y.Offset;
+                                    Count = Count + 1;
+                                end;
+                            end;
+                            if Count > 1 then
+                                ContentH = ContentH + ((Count - 1) * 4);
+                            end;
+                            BoxOuter.Size = UDim2.new(1, 0, 0, math.max(headerH + ContentH + 8, 28));
+                        end;
+                        Groupbox.Container = Container;
+                        setmetatable(Groupbox, BaseGroupbox);
+                        Groupbox:Resize();
+                        return Groupbox;
+                    end
+
+                    function Page:AddLeftGroupbox(N)
+                        return Page:AddGroupbox({ Side = 1; Name = N; });
+                    end
+                    function Page:AddRightGroupbox(N)
+                        return Page:AddGroupbox({ Side = 2; Name = N; });
+                    end
+
+                    -- Direct AddToggle etc. land in left column by default
+                    PageContainer = Library:Create('Frame', {
+                        BackgroundTransparency = 1;
+                        Size = UDim2.new(1, 0, 0, 0);
+                        ZIndex = 1;
+                        Parent = PageLeft;
+                    });
+                    Library:Create('UIListLayout', {
+                        FillDirection = Enum.FillDirection.Vertical;
+                        SortOrder = Enum.SortOrder.LayoutOrder;
+                        Padding = UDim.new(0, 4);
+                        Parent = PageContainer;
+                    });
+                    Page.Container = PageContainer;
+                    setmetatable(Page, BaseGroupbox);
+                else
+                    PageContainer = Library:Create('Frame', {
+                        BackgroundTransparency = 1;
+                        Size = UDim2.new(1, 0, 1, 0);
+                        ZIndex = 1;
+                        Parent = PageRoot;
+                    });
+                    Library:Create('UIListLayout', {
+                        FillDirection = Enum.FillDirection.Vertical;
+                        SortOrder = Enum.SortOrder.LayoutOrder;
+                        Padding = UDim.new(0, 4);
+                        Parent = PageContainer;
+                    });
+                    Page.Container = PageContainer;
+                    setmetatable(Page, BaseGroupbox);
+                end
+
+                function Page:Show()
                     for _, Other in next, Tabbox.Tabs do
                         Other:Hide();
                     end;
-                    Container.Visible = true;
+                    PageRoot.Visible = true;
                     Underline.Visible = true;
                     ButtonLabel.TextColor3 = Library.FontColor;
-                    Tab:Resize();
+                    Page:Resize();
                 end;
 
-                function Tab:Hide()
-                    Container.Visible = false;
+                function Page:Hide()
+                    PageRoot.Visible = false;
                     Underline.Visible = false;
                     ButtonLabel.TextColor3 = Library.MutedColor;
                 end;
 
-                function Tab:Resize()
-                    if (not Container.Visible) then
+                function Page:Resize()
+                    if FullWidth then
+                        BoxOuter.Size = UDim2.new(1, -16, 1, -12);
+                        if PageContainer then
+                            local ContentH, Count = 0, 0;
+                            for _, Element in next, PageContainer:GetChildren() do
+                                if (not Element:IsA('UIListLayout')) and Element.Visible then
+                                    ContentH = ContentH + Element.Size.Y.Offset;
+                                    Count = Count + 1;
+                                end;
+                            end;
+                            if Count > 1 then
+                                ContentH = ContentH + ((Count - 1) * 4);
+                            end;
+                            PageContainer.Size = UDim2.new(1, 0, 0, ContentH);
+                        end
                         return;
                     end;
-                    local ContentH = 0;
-                    local Count = 0;
-                    for _, Element in next, Tab.Container:GetChildren() do
+                    if (not PageRoot.Visible) then
+                        return;
+                    end;
+                    local ContentH, Count = 0, 0;
+                    for _, Element in next, Page.Container:GetChildren() do
                         if (not Element:IsA('UIListLayout')) and Element.Visible then
                             ContentH = ContentH + Element.Size.Y.Offset;
                             Count = Count + 1;
@@ -3711,23 +3899,23 @@ function Library:CreateWindow(...)
 
                 Button.InputBegan:Connect(function(Input)
                     if Input.UserInputType == Enum.UserInputType.MouseButton1 and not Library:MouseIsOverOpenedFrame() then
-                        Tab:Show();
-                        Tab:Resize();
+                        Page:Show();
+                        Page:Resize();
                     end;
                 end);
 
-                Tab.Container = Container;
-                Tabbox.Tabs[Name] = Tab;
-                setmetatable(Tab, BaseGroupbox);
+                Tabbox.Tabs[Name] = Page;
 
-                Tab:AddBlank(2);
-                Tab:Resize();
+                if not FullWidth then
+                    Page:AddBlank(2);
+                    Page:Resize();
+                end
 
                 if #TabboxButtons:GetChildren() == 2 then
-                    Tab:Show();
+                    Page:Show();
                 end;
 
-                return Tab;
+                return Page;
             end;
 
             Tab.Tabboxes[Info.Name or ''] = Tabbox;
@@ -3740,6 +3928,10 @@ function Library:CreateWindow(...)
 
         function Tab:AddRightTabbox(Name)
             return Tab:AddTabbox({ Name = Name, Side = 2; });
+        end;
+
+        function Tab:AddFullTabbox(Name)
+            return Tab:AddTabbox({ Name = Name, FullWidth = true; Side = 0; });
         end;
 
         TabButton.InputBegan:Connect(function(Input)
