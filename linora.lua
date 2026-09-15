@@ -48,45 +48,47 @@ local Library = {
     DependencyBoxes = {};
     Searchables = {};
 
-    -- Local / GitHub PNG icons (Nebula Lucide exports + briefcase)
+    -- Phosphor Filled (Nebula) via rbxassetid — solid icons, no stretchy PNG cache
     IconBase = 'https://raw.githubusercontent.com/Supertom12/linora/main/';
     Icons = {
-        user = 'user.png',
-        ['dollar-sign'] = 'briefcase.png',
-        cog = 'cog.png',
-        settings = 'settings.png',
-        car = 'car.png',
-        swords = 'swords.png',
-        sword = 'swords.png',
-        eye = 'eye.png',
-        search = 'search.png',
-        briefcase = 'briefcase.png',
-        ['map-pin'] = 'map-pin.png',
-        ['settings-2'] = 'settings.png',
-        ['car-front'] = 'car.png',
-        wrench = 'cog.png',
-        crosshair = 'swords.png',
-        ['scan-eye'] = 'eye.png',
-        ['circle-user-round'] = 'user.png',
-        ['circle-dollar-sign'] = 'briefcase.png',
-        ['magnifying-glass'] = 'search.png',
-        ['gear-six'] = 'settings.png',
+        user = 'rbxassetid://92109577763657',
+        ['dollar-sign'] = 'rbxassetid://115927013358481',
+        cog = 'rbxassetid://128863007232463',
+        settings = 'rbxassetid://138683035860008',
+        car = 'rbxassetid://130466720064677', -- car-profile (side view, not wide front)
+        swords = 'rbxassetid://70953410348206', -- crosshair (cleaner than swords)
+        sword = 'rbxassetid://70953410348206',
+        crosshair = 'rbxassetid://70953410348206',
+        eye = 'rbxassetid://91148908779390',
+        search = 'rbxassetid://97766305654243',
+        briefcase = 'rbxassetid://115927013358481',
+        ['map-pin'] = 'rbxassetid://134492119148232',
+        ['settings-2'] = 'rbxassetid://138683035860008',
+        ['car-front'] = 'rbxassetid://130466720064677',
+        wrench = 'rbxassetid://128863007232463',
+        ['scan-eye'] = 'rbxassetid://91148908779390',
+        ['circle-user-round'] = 'rbxassetid://92109577763657',
+        ['circle-dollar-sign'] = 'rbxassetid://115927013358481',
+        ['magnifying-glass'] = 'rbxassetid://97766305654243',
+        ['gear-six'] = 'rbxassetid://138683035860008',
+        knife = 'rbxassetid://74517561087832',
+        target = 'rbxassetid://126787144161031',
     };
 
     TabIcons = {
-        Default = 'user.png',
-        Main = 'user.png',
-        Player = 'user.png',
-        Money = 'briefcase.png',
-        Misc = 'map-pin.png',
-        Teleports = 'map-pin.png',
-        Autofarm = 'briefcase.png',
-        Farm = 'briefcase.png',
-        Combat = 'swords.png',
-        Visuals = 'eye.png',
-        Vehicles = 'car.png',
-        Vehicle = 'car.png',
-        Settings = 'settings.png',
+        Default = 'user',
+        Main = 'user',
+        Player = 'user',
+        Money = 'briefcase',
+        Misc = 'map-pin',
+        Teleports = 'map-pin',
+        Autofarm = 'briefcase',
+        Farm = 'briefcase',
+        Combat = 'crosshair',
+        Visuals = 'eye',
+        Vehicles = 'car',
+        Vehicle = 'car',
+        Settings = 'settings',
     };
 
     Signals = {};
@@ -121,26 +123,28 @@ function Library:GetIcon(Name)
     end
 
     local Fallbacks = {
-        user = 'rbxassetid://81899856845503',
-        ['dollar-sign'] = 'rbxassetid://79573382931819',
-        cog = 'rbxassetid://134998527925514',
-        settings = 'rbxassetid://101463883805422',
-        car = 'rbxassetid://104209031513829',
-        swords = 'rbxassetid://89815227241465',
-        sword = 'rbxassetid://89815227241465',
-        eye = 'rbxassetid://139722329189430',
-        search = 'rbxassetid://125618569555993',
-        briefcase = 'rbxassetid://79573382931819',
+        user = 'rbxassetid://92109577763657',
+        ['dollar-sign'] = 'rbxassetid://115927013358481',
+        cog = 'rbxassetid://128863007232463',
+        settings = 'rbxassetid://138683035860008',
+        car = 'rbxassetid://130466720064677',
+        swords = 'rbxassetid://70953410348206',
+        sword = 'rbxassetid://70953410348206',
+        crosshair = 'rbxassetid://70953410348206',
+        eye = 'rbxassetid://91148908779390',
+        search = 'rbxassetid://97766305654243',
+        briefcase = 'rbxassetid://115927013358481',
         ['map-pin'] = 'rbxassetid://134492119148232',
-        ['settings-2'] = 'rbxassetid://101463883805422',
-        ['car-front'] = 'rbxassetid://104209031513829',
-        wrench = 'rbxassetid://134998527925514',
-        crosshair = 'rbxassetid://89815227241465',
-        ['scan-eye'] = 'rbxassetid://139722329189430',
-        ['circle-user-round'] = 'rbxassetid://81899856845503',
-        ['circle-dollar-sign'] = 'rbxassetid://79573382931819',
-        ['magnifying-glass'] = 'rbxassetid://125618569555993',
-        ['gear-six'] = 'rbxassetid://101463883805422',
+        ['settings-2'] = 'rbxassetid://138683035860008',
+        ['car-front'] = 'rbxassetid://130466720064677',
+        wrench = 'rbxassetid://128863007232463',
+        ['scan-eye'] = 'rbxassetid://91148908779390',
+        ['circle-user-round'] = 'rbxassetid://92109577763657',
+        ['circle-dollar-sign'] = 'rbxassetid://115927013358481',
+        ['magnifying-glass'] = 'rbxassetid://97766305654243',
+        ['gear-six'] = 'rbxassetid://138683035860008',
+        knife = 'rbxassetid://74517561087832',
+        target = 'rbxassetid://126787144161031',
     };
 
     local key = string.lower(Name);
@@ -156,7 +160,7 @@ function Library:GetIcon(Name)
     -- Prefer workspace PNG, then cached download, then Nebula rbxassetid
     if type(file) == 'string' then
         local ok, asset = pcall(function()
-            local folder = 'linora_icons_v5';
+            local folder = 'linora_icons_v6';
             if makefolder and (not isfolder or not isfolder(folder)) then
                 makefolder(folder);
             end
@@ -180,7 +184,7 @@ function Library:GetIcon(Name)
 
             local function isGoodPng(data)
                 return type(data) == 'string'
-                    and #data >= 700
+                    and #data >= 200
                     and string.sub(data, 1, 1) ~= '<'
                     and string.sub(data, 1, 8) == '\137PNG\r\n\26\n';
             end
@@ -3451,13 +3455,17 @@ function Library:CreateWindow(...)
             BackgroundTransparency = 1;
             AnchorPoint = Vector2.new(0.5, 0);
             Position = UDim2.new(0.5, 0, 0, 8);
-            Size = UDim2.new(0, 22, 0, 22);
+            Size = UDim2.new(0, 18, 0, 18);
             Image = IconId;
             ImageColor3 = Library.MutedColor;
             ScaleType = Enum.ScaleType.Fit;
             ZIndex = 5;
             Parent = TabButton;
         });
+        local IconAspect = Instance.new('UIAspectRatioConstraint');
+        IconAspect.AspectRatio = 1;
+        IconAspect.DominantAxis = Enum.DominantAxis.Height;
+        IconAspect.Parent = IconImage;
 
         local TabButtonLabel = Library:CreateLabel({
             Position = UDim2.new(0, 2, 0, 30);
@@ -3826,7 +3834,7 @@ function Library:CreateWindow(...)
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
                         Size = UDim2.new(1, -8, 0, 0);
-                        Position = UDim2.new(0, 0, 0, 0);
+                        Position = UDim2.new(0, 0, 0, 6);
                         ZIndex = 2;
                         Parent = PageScroll;
                     });
@@ -3835,8 +3843,8 @@ function Library:CreateWindow(...)
                     PageLeft = Library:Create('Frame', {
                         BackgroundTransparency = 1;
                         BorderSizePixel = 0;
-                        Position = UDim2.new(0, 18, 0, 0);
-                        Size = UDim2.new(0.5, -28, 0, 0);
+                        Position = UDim2.new(0, 22, 0, 0);
+                        Size = UDim2.new(0.5, -32, 0, 0);
                         ZIndex = 2;
                         Parent = PageInner;
                     });
@@ -3861,10 +3869,10 @@ function Library:CreateWindow(...)
                             rightH = rightLayout.AbsoluteContentSize.Y;
                         end
                         local h = math.max(leftH, rightH) + 24;
-                        PageLeft.Size = UDim2.new(0.5, -28, 0, leftH);
+                        PageLeft.Size = UDim2.new(0.5, -32, 0, leftH);
                         PageRight.Size = UDim2.new(0.5, -18, 0, rightH);
                         PageInner.Size = UDim2.new(1, -8, 0, h);
-                        PageScroll.CanvasSize = UDim2.fromOffset(0, h + 32);
+                        PageScroll.CanvasSize = UDim2.fromOffset(0, h + 40);
                     end
 
                     for _, Side in next, { PageLeft, PageRight } do
