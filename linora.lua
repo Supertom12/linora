@@ -29,15 +29,15 @@ local Library = {
 
     HudRegistry = {};
 
-    FontColor = Color3.fromRGB(255, 255, 255);
-    MainColor = Color3.fromRGB(28, 28, 28);
-    BackgroundColor = Color3.fromRGB(20, 20, 20);
-    AccentColor = Color3.fromRGB(0, 85, 255);
-    OutlineColor = Color3.fromRGB(50, 50, 50);
-    RiskColor = Color3.fromRGB(255, 50, 50),
+    FontColor = Color3.fromRGB(235, 238, 245);
+    MainColor = Color3.fromRGB(24, 25, 30);
+    BackgroundColor = Color3.fromRGB(15, 16, 20);
+    AccentColor = Color3.fromRGB(88, 140, 255);
+    OutlineColor = Color3.fromRGB(42, 44, 54);
+    RiskColor = Color3.fromRGB(255, 70, 70);
 
     Black = Color3.new(0, 0, 0);
-    Font = Enum.Font.Code,
+    Font = Enum.Font.Gotham;
 
     OpenedFrames = {};
     DependencyBoxes = {};
@@ -164,29 +164,73 @@ end;
 function Library:MakeDraggable(Instance, Cutoff)
     Instance.Active = true;
 
-    Instance.InputBegan:Connect(function(Input)
-        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-            local ObjPos = Vector2.new(
-                Mouse.X - Instance.AbsolutePosition.X,
-                Mouse.Y - Instance.AbsolutePosition.Y
-            );
+    local Dragging = false;
+    local DragStart;
+    local StartPos;
+    local MaxY = Cutoff or 40;
 
-            if ObjPos.Y > (Cutoff or 40) then
-                return;
-            end;
+    local function InTitleBar()
+        local Abs = Instance.AbsolutePosition;
+        local Size = Instance.AbsoluteSize;
+        local X, Y = Mouse.X, Mouse.Y;
+        return X >= Abs.X
+            and X <= Abs.X + Size.X
+            and Y >= Abs.Y
+            and Y <= Abs.Y + MaxY;
+    end;
 
-            while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-                Instance.Position = UDim2.new(
-                    0,
-                    Mouse.X - ObjPos.X + (Instance.Size.X.Offset * Instance.AnchorPoint.X),
-                    0,
-                    Mouse.Y - ObjPos.Y + (Instance.Size.Y.Offset * Instance.AnchorPoint.Y)
-                );
-
-                RenderStepped:Wait();
-            end;
+    local function BeginDrag(Input)
+        if Input.UserInputType ~= Enum.UserInputType.MouseButton1
+            and Input.UserInputType ~= Enum.UserInputType.Touch
+        then
+            return;
         end;
-    end)
+        if not Instance.Visible or not InTitleBar() then
+            return;
+        end;
+
+        -- Offset + zero anchor so Center windows don't jump / stick
+        if Instance.AnchorPoint ~= Vector2.zero then
+            local Abs = Instance.AbsolutePosition;
+            Instance.AnchorPoint = Vector2.zero;
+            Instance.Position = UDim2.fromOffset(Abs.X, Abs.Y);
+        end;
+
+        Dragging = true;
+        DragStart = Input.Position;
+        StartPos = Instance.Position;
+    end;
+
+    Library:GiveSignal(InputService.InputBegan:Connect(function(Input)
+        BeginDrag(Input);
+    end));
+
+    Library:GiveSignal(InputService.InputChanged:Connect(function(Input)
+        if not Dragging then
+            return;
+        end;
+        if Input.UserInputType ~= Enum.UserInputType.MouseMovement
+            and Input.UserInputType ~= Enum.UserInputType.Touch
+        then
+            return;
+        end;
+
+        local Delta = Input.Position - DragStart;
+        Instance.Position = UDim2.new(
+            StartPos.X.Scale,
+            StartPos.X.Offset + Delta.X,
+            StartPos.Y.Scale,
+            StartPos.Y.Offset + Delta.Y
+        );
+    end));
+
+    Library:GiveSignal(InputService.InputEnded:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1
+            or Input.UserInputType == Enum.UserInputType.Touch
+        then
+            Dragging = false;
+        end;
+    end));
 end;
 
 function Library:AddToolTip(InfoStr, HoverInstance)
@@ -2948,7 +2992,7 @@ function Library:CreateWindow(...)
     if type(Config.MenuFadeTime) ~= 'number' then Config.MenuFadeTime = 0.2 end
 
     if typeof(Config.Position) ~= 'UDim2' then Config.Position = UDim2.fromOffset(175, 50) end
-    if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(550, 600) end
+    if typeof(Config.Size) ~= 'UDim2' then Config.Size = UDim2.fromOffset(560, 520) end
 
     if Config.Center then
         Config.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -2961,7 +3005,7 @@ function Library:CreateWindow(...)
 
     local Outer = Library:Create('Frame', {
         AnchorPoint = Config.AnchorPoint,
-        BackgroundColor3 = Color3.new(0, 0, 0);
+        BackgroundColor3 = Color3.fromRGB(8, 8, 10);
         BorderSizePixel = 0;
         Position = Config.Position,
         Size = Config.Size,
@@ -2970,7 +3014,7 @@ function Library:CreateWindow(...)
         Parent = ScreenGui;
     });
 
-    Library:MakeDraggable(Outer, 25);
+    Library:MakeDraggable(Outer, 32);
 
     local Inner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
@@ -2987,20 +3031,47 @@ function Library:CreateWindow(...)
         BorderColor3 = 'AccentColor';
     });
 
-    local WindowLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 7, 0, 0);
-        Size = UDim2.new(0, 0, 0, 25);
-        Text = Config.Title or '';
-        TextXAlignment = Enum.TextXAlignment.Left;
-        ZIndex = 1;
+    local TitleBar = Library:Create('Frame', {
+        BackgroundColor3 = Library.BackgroundColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 0, 0, 0);
+        Size = UDim2.new(1, 0, 0, 28);
+        ZIndex = 2;
         Parent = Inner;
+    });
+
+    Library:AddToRegistry(TitleBar, {
+        BackgroundColor3 = 'BackgroundColor';
+    });
+
+    local TitleAccent = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 0, 1, -1);
+        Size = UDim2.new(1, 0, 0, 1);
+        ZIndex = 3;
+        Parent = TitleBar;
+    });
+
+    Library:AddToRegistry(TitleAccent, {
+        BackgroundColor3 = 'AccentColor';
+    });
+
+    local WindowLabel = Library:CreateLabel({
+        Position = UDim2.new(0, 10, 0, 0);
+        Size = UDim2.new(1, -20, 1, 0);
+        Text = Config.Title or '';
+        TextSize = 15;
+        TextXAlignment = Enum.TextXAlignment.Left;
+        ZIndex = 4;
+        Parent = TitleBar;
     });
 
     local MainSectionOuter = Library:Create('Frame', {
         BackgroundColor3 = Library.BackgroundColor;
         BorderColor3 = Library.OutlineColor;
-        Position = UDim2.new(0, 8, 0, 25);
-        Size = UDim2.new(1, -16, 1, -33);
+        Position = UDim2.new(0, 8, 0, 34);
+        Size = UDim2.new(1, -16, 1, -42);
         ZIndex = 1;
         Parent = Inner;
     });
