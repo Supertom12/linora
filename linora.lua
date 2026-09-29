@@ -46,7 +46,6 @@ local Library = {
     -- Spacing and motion remain configurable without changing the flat style.
     WindowPadding = 10;
     MotionOffset = 12;
-    CursorOffset = Vector2.zero;
 
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.Gotham;
@@ -3776,68 +3775,16 @@ function Library:CreateWindow(...)
     local Toggled = false;
     local Fading = false;
     local MouseIconWasEnabled = nil;
-    local Cursor;
-    local CursorOutline;
-    local CursorConnection;
 
-    local function StopCursor()
-        if CursorConnection then
-            CursorConnection:Disconnect();
-            CursorConnection = nil;
-        end;
-        if Cursor then
-            Cursor:Remove();
-            Cursor = nil;
-        end;
-        if CursorOutline then
-            CursorOutline:Remove();
-            CursorOutline = nil;
-        end;
+    local function RestoreMouseIcon()
         if MouseIconWasEnabled ~= nil then
             InputService.MouseIconEnabled = MouseIconWasEnabled;
             MouseIconWasEnabled = nil;
         end;
     end;
 
-    local function StartCursor()
-        MouseIconWasEnabled = InputService.MouseIconEnabled;
-        local Created = pcall(function()
-            Cursor = Drawing.new('Triangle');
-            CursorOutline = Drawing.new('Triangle');
-        end);
-        if not Created then
-            if Cursor then Cursor:Remove(); Cursor = nil; end;
-            if CursorOutline then CursorOutline:Remove(); CursorOutline = nil; end;
-            InputService.MouseIconEnabled = true;
-            return;
-        end;
-
-        Cursor.Thickness = 1;
-        Cursor.Filled = true;
-        Cursor.Visible = true;
-        CursorOutline.Thickness = 1;
-        CursorOutline.Filled = false;
-        CursorOutline.Color = Color3.new(0, 0, 0);
-        CursorOutline.Visible = true;
-
-        local function UpdateCursor()
-            local MousePosition = Pointer() + Library.CursorOffset;
-            Cursor.Color = Library.AccentColor;
-            Cursor.PointA = MousePosition;
-            Cursor.PointB = MousePosition + Vector2.new(16, 6);
-            Cursor.PointC = MousePosition + Vector2.new(6, 16);
-            CursorOutline.PointA = Cursor.PointA;
-            CursorOutline.PointB = Cursor.PointB;
-            CursorOutline.PointC = Cursor.PointC;
-            InputService.MouseIconEnabled = false;
-        end;
-
-        UpdateCursor();
-        CursorConnection = RenderStepped:Connect(UpdateCursor);
-    end;
-
     ScreenGui.Destroying:Connect(function()
-        StopCursor();
+        RestoreMouseIcon();
     end);
 
     function Library:Toggle()
@@ -3852,9 +3799,10 @@ function Library:CreateWindow(...)
 
         local Opening = Toggled;
         if Opening then
-            StartCursor();
+            MouseIconWasEnabled = InputService.MouseIconEnabled;
+            InputService.MouseIconEnabled = true;
         else
-            StopCursor();
+            RestoreMouseIcon();
         end;
 
         local RestPosition = Outer.Position;
