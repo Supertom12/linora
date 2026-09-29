@@ -1,6 +1,8 @@
 local InputService = game:GetService('UserInputService');
+local GuiService = game:GetService('GuiService');
 local function Pointer()
-    return InputService:GetMouseLocation();
+    local GuiInset = GuiService:GetGuiInset();
+    return InputService:GetMouseLocation() - GuiInset;
 end;
 local TextService = game:GetService('TextService');
 local CoreGui = game:GetService('CoreGui');
@@ -19,6 +21,7 @@ local ScreenGui = NewInstance('ScreenGui');
 ProtectGui(ScreenGui);
 
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global;
+ScreenGui.IgnoreGuiInset = false;
 ScreenGui.Parent = CoreGui;
 
 local Toggles = {};
@@ -3729,6 +3732,13 @@ function Library:CreateWindow(...)
     local TransparencyCache = {};
     local Toggled = false;
     local Fading = false;
+    local MouseIconWasEnabled = nil;
+
+    ScreenGui.Destroying:Connect(function()
+        if MouseIconWasEnabled ~= nil then
+            InputService.MouseIconEnabled = MouseIconWasEnabled;
+        end;
+    end);
 
     function Library:Toggle()
         if Fading then
@@ -3741,6 +3751,14 @@ function Library:CreateWindow(...)
         ModalElement.Modal = Toggled;
 
         local Opening = Toggled;
+        if Opening then
+            MouseIconWasEnabled = InputService.MouseIconEnabled;
+            InputService.MouseIconEnabled = true;
+        elseif MouseIconWasEnabled ~= nil then
+            InputService.MouseIconEnabled = MouseIconWasEnabled;
+            MouseIconWasEnabled = nil;
+        end;
+
         local RestPosition = Outer.Position;
         local ShiftedPosition = RestPosition + UDim2.fromOffset(0, Library.MotionOffset);
         local TweenInfoForMenu = TweenInfo.new(
@@ -3752,45 +3770,6 @@ function Library:CreateWindow(...)
         if Opening then
             Outer.Position = ShiftedPosition;
             WindowScale.Scale = 0.98;
-
-            task.spawn(function()
-                -- TODO: add cursor fade?
-                local State = InputService.MouseIconEnabled;
-
-                local Cursor = Drawing.new('Triangle');
-                Cursor.Thickness = 1;
-                Cursor.Filled = true;
-                Cursor.Visible = true;
-
-                local CursorOutline = Drawing.new('Triangle');
-                CursorOutline.Thickness = 1;
-                CursorOutline.Filled = false;
-                CursorOutline.Color = Color3.new(0, 0, 0);
-                CursorOutline.Visible = true;
-
-                while Toggled and ScreenGui.Parent do
-                    InputService.MouseIconEnabled = false;
-
-                    local mPos = InputService:GetMouseLocation();
-
-                    Cursor.Color = Library.AccentColor;
-
-                    Cursor.PointA = Vector2.new(mPos.X, mPos.Y);
-                    Cursor.PointB = Vector2.new(mPos.X + 16, mPos.Y + 6);
-                    Cursor.PointC = Vector2.new(mPos.X + 6, mPos.Y + 16);
-
-                    CursorOutline.PointA = Cursor.PointA;
-                    CursorOutline.PointB = Cursor.PointB;
-                    CursorOutline.PointC = Cursor.PointC;
-
-                    RenderStepped:Wait();
-                end;
-
-                InputService.MouseIconEnabled = State;
-
-                Cursor:Remove();
-                CursorOutline:Remove();
-            end);
         end;
 
         local FadeTargets = { Outer };
