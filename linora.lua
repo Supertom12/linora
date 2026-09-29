@@ -46,6 +46,7 @@ local Library = {
     -- Spacing and motion remain configurable without changing the flat style.
     WindowPadding = 10;
     MotionOffset = 12;
+    CursorOffset = Vector2.zero;
 
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.Gotham;
@@ -1134,13 +1135,35 @@ do
             Parent = ModeSelectInner;
         });
 
-        local ContainerLabel = Library:CreateLabel({
-            TextXAlignment = Enum.TextXAlignment.Left;
-            Size = UDim2.new(1, 0, 0, 18);
-            TextSize = 13;
+        local KeybindRow = Library:Create('Frame', {
+            BackgroundColor3 = Library.BackgroundColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, -16, 0, 20);
             Visible = false;
-            ZIndex = 110;
+            ZIndex = 102;
             Parent = Library.KeybindContainer;
+        });
+        Library:AddToRegistry(KeybindRow, { BackgroundColor3 = 'BackgroundColor'; }, true);
+
+        local BindName = Library:CreateLabel({
+            Name = 'BindName';
+            TextXAlignment = Enum.TextXAlignment.Left;
+            TextTruncate = Enum.TextTruncate.AtEnd;
+            Position = UDim2.fromOffset(6, 0);
+            Size = UDim2.new(1, -90, 1, 0);
+            TextSize = 13;
+            ZIndex = 103;
+            Parent = KeybindRow;
+        }, true);
+
+        local BindValue = Library:CreateLabel({
+            Name = 'BindValue';
+            TextXAlignment = Enum.TextXAlignment.Right;
+            Position = UDim2.new(1, -84, 0, 0);
+            Size = UDim2.fromOffset(78, 20);
+            TextSize = 12;
+            ZIndex = 103;
+            Parent = KeybindRow;
         },  true);
 
         local Modes = Info.Modes or { 'Always', 'Toggle', 'Hold' };
@@ -1181,6 +1204,7 @@ do
             Label.InputBegan:Connect(function(Input)
                 if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                     ModeButton:Select();
+                    KeyPicker:Update();
                     Library:AttemptSave();
                 end;
             end);
@@ -1199,26 +1223,36 @@ do
 
             local State = KeyPicker:GetState();
 
-            ContainerLabel.Text = string.format('[%s] %s (%s)', KeyPicker.Value, Info.Text, KeyPicker.Mode);
+            BindName.Text = tostring(Info.Text or Idx);
+            BindValue.Text = string.format('%s · %s', tostring(KeyPicker.Value), tostring(KeyPicker.Mode));
+            BindValue.TextColor3 = State and Library.AccentColor or Library.FontColor;
+            Library.RegistryMap[BindValue].Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
 
-            ContainerLabel.Visible = true;
-            ContainerLabel.TextColor3 = State and Library.AccentColor or Library.FontColor;
+            local ValueWidth = Library:GetTextBounds(BindValue.Text, Library.Font, 12) + 8;
+            BindValue.Size = UDim2.fromOffset(ValueWidth, 20);
+            BindValue.Position = UDim2.new(1, -ValueWidth - 6, 0, 0);
+            BindName.Size = UDim2.new(1, -ValueWidth - 18, 1, 0);
+            KeybindRow.Visible = true;
 
-            Library.RegistryMap[ContainerLabel].Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
-
-            local YSize = 0
-            local XSize = 0
-
-            for _, Label in next, Library.KeybindContainer:GetChildren() do
-                if Label:IsA('TextLabel') and Label.Visible then
-                    YSize = YSize + 18;
-                    if (Label.TextBounds.X > XSize) then
-                        XSize = Label.TextBounds.X
-                    end
+            local RowCount = 0;
+            local ContentWidth = 0;
+            for _, Row in next, Library.KeybindContainer:GetChildren() do
+                if Row:IsA('Frame') and Row.Visible then
+                    RowCount = RowCount + 1;
+                    local RowName = Row:FindFirstChild('BindName');
+                    local RowValue = Row:FindFirstChild('BindValue');
+                    if RowName and RowValue then
+                        local NameWidth = Library:GetTextBounds(RowName.Text, Library.Font, 13);
+                        local RowValueWidth = Library:GetTextBounds(RowValue.Text, Library.Font, 12);
+                        ContentWidth = math.max(ContentWidth, NameWidth + RowValueWidth + 42);
+                    end;
                 end;
             end;
 
-            Library.KeybindFrame.Size = UDim2.new(0, math.max(XSize + 10, 210), 0, YSize + 23)
+            Library.KeybindFrame.Size = UDim2.fromOffset(
+                math.max(210, ContentWidth),
+                38 + RowCount * 20 + math.max(0, RowCount - 1) * 2
+            );
         end;
 
         function KeyPicker:GetState()
@@ -1315,6 +1349,7 @@ do
 
                     DisplayLabel.Text = Key;
                     KeyPicker.Value = Key;
+                    KeyPicker:Update();
 
                     Library:SafeCallback(KeyPicker.ChangedCallback, Input.KeyCode or Input.UserInputType)
                     Library:SafeCallback(KeyPicker.Changed, Input.KeyCode or Input.UserInputType)
@@ -2808,18 +2843,28 @@ do
 
     local KeybindOuter = Library:Create('Frame', {
         AnchorPoint = Vector2.new(0, 0.5);
-        BorderColor3 = Color3.new(0, 0, 0);
+        BackgroundColor3 = Library.BackgroundColor;
+        BorderSizePixel = 0;
         Position = UDim2.new(0, 10, 0.5, 0);
-        Size = UDim2.new(0, 210, 0, 20);
+        Size = UDim2.fromOffset(210, 32);
         Visible = false;
         ZIndex = 100;
         Parent = ScreenGui;
     });
+    Library:AddToRegistry(KeybindOuter, { BackgroundColor3 = 'BackgroundColor'; }, true);
+
+    local KeybindStroke = Library:Create('UIStroke', {
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+        Color = Library.OutlineColor;
+        Thickness = 1;
+        Transparency = 0.25;
+        Parent = KeybindOuter;
+    });
+    Library:AddToRegistry(KeybindStroke, { Color = 'OutlineColor'; }, true);
 
     local KeybindInner = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor;
-        BorderColor3 = Library.OutlineColor;
-        BorderMode = Enum.BorderMode.Inset;
+        BorderSizePixel = 0;
         Size = UDim2.new(1, 0, 1, 0);
         ZIndex = 101;
         Parent = KeybindOuter;
@@ -2827,14 +2872,14 @@ do
 
     Library:AddToRegistry(KeybindInner, {
         BackgroundColor3 = 'MainColor';
-        BorderColor3 = 'OutlineColor';
     }, true);
 
     local ColorFrame = Library:Create('Frame', {
         BackgroundColor3 = Library.AccentColor;
         BorderSizePixel = 0;
-        Size = UDim2.new(1, 0, 0, 2);
-        ZIndex = 102;
+        Position = UDim2.fromOffset(8, 28);
+        Size = UDim2.new(1, -16, 0, 1);
+        ZIndex = 103;
         Parent = KeybindInner;
     });
 
@@ -2843,37 +2888,35 @@ do
     }, true);
 
     local KeybindLabel = Library:CreateLabel({
-        Size = UDim2.new(1, 0, 0, 20);
-        Position = UDim2.fromOffset(5, 2),
+        Size = UDim2.new(1, -16, 0, 26);
+        Position = UDim2.fromOffset(8, 2),
         TextXAlignment = Enum.TextXAlignment.Left,
-
+        TextSize = 13;
+        Font = Enum.Font.GothamMedium;
         Text = 'Keybinds';
         ZIndex = 104;
         Parent = KeybindInner;
-    });
+    }, true);
 
     local KeybindContainer = Library:Create('Frame', {
         BackgroundTransparency = 1;
-        Size = UDim2.new(1, 0, 1, -20);
-        Position = UDim2.new(0, 0, 0, 20);
+        Size = UDim2.new(1, 0, 1, -32);
+        Position = UDim2.new(0, 0, 0, 32);
         ZIndex = 1;
         Parent = KeybindInner;
     });
 
     Library:Create('UIListLayout', {
         FillDirection = Enum.FillDirection.Vertical;
+        HorizontalAlignment = Enum.HorizontalAlignment.Center;
+        Padding = UDim.new(0, 2);
         SortOrder = Enum.SortOrder.LayoutOrder;
         Parent = KeybindContainer;
     });
 
-    Library:Create('UIPadding', {
-        PaddingLeft = UDim.new(0, 5),
-        Parent = KeybindContainer,
-    })
-
     Library.KeybindFrame = KeybindOuter;
     Library.KeybindContainer = KeybindContainer;
-    Library:MakeDraggable(KeybindOuter);
+    Library:MakeDraggable(KeybindOuter, 28);
 end;
 
 function Library:SetWatermarkVisibility(Bool)
@@ -3090,29 +3133,28 @@ function Library:CreateWindow(...)
 
     local CloseButton = Library:Create('TextButton', {
         AutoButtonColor = false;
-        BackgroundColor3 = Library.MainColor;
+        BackgroundTransparency = 1;
         BorderSizePixel = 0;
-        Position = UDim2.new(1, -34, 0, 8);
-        Size = UDim2.fromOffset(24, 24);
+        Position = UDim2.new(1, -38, 0, 6);
+        Size = UDim2.fromOffset(28, 28);
         Text = '×';
         TextColor3 = Library.FontColor;
-        TextSize = 17;
-        Font = Enum.Font.GothamMedium;
+        TextSize = 22;
+        Font = Enum.Font.GothamBold;
         ZIndex = 5;
         Parent = TitleBar;
     });
     Library:AddToRegistry(CloseButton, {
-        BackgroundColor3 = 'MainColor';
         TextColor3 = 'FontColor';
     });
     CloseButton.MouseEnter:Connect(function()
         TweenService:Create(CloseButton, TweenInfo.new(0.15, Enum.EasingStyle.Quart), {
-            BackgroundColor3 = Library.OutlineColor;
+            TextColor3 = Library.RiskColor;
         }):Play();
     end);
     CloseButton.MouseLeave:Connect(function()
         TweenService:Create(CloseButton, TweenInfo.new(0.15, Enum.EasingStyle.Quart), {
-            BackgroundColor3 = Library.MainColor;
+            TextColor3 = Library.FontColor;
         }):Play();
     end);
 
@@ -3180,6 +3222,7 @@ function Library:CreateWindow(...)
         BorderSizePixel = 0;
         Position = UDim2.new(0, 8, 0, 34);
         Size = UDim2.new(1, -16, 1, -42);
+        ClipsDescendants = true;
         ZIndex = 2;
         Parent = MainSectionInner;
     });
@@ -3250,12 +3293,12 @@ function Library:CreateWindow(...)
         local LeftSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0, 8 - 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -10, 1, -14);
+            Position = UDim2.new(0, 8, 0, 8);
+            Size = UDim2.new(0.5, -13, 1, -16);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
-            ScrollBarThickness = 3;
+            ScrollBarThickness = 2;
             ScrollBarImageColor3 = Library.OutlineColor;
             ZIndex = 2;
             Parent = TabFrame;
@@ -3264,12 +3307,12 @@ function Library:CreateWindow(...)
         local RightSide = Library:Create('ScrollingFrame', {
             BackgroundTransparency = 1;
             BorderSizePixel = 0;
-            Position = UDim2.new(0.5, 4 + 1, 0, 8 - 1);
-            Size = UDim2.new(0.5, -10, 1, -14);
+            Position = UDim2.new(0.5, 5, 0, 8);
+            Size = UDim2.new(0.5, -13, 1, -16);
             CanvasSize = UDim2.new(0, 0, 0, 0);
             BottomImage = '';
             TopImage = '';
-            ScrollBarThickness = 3;
+            ScrollBarThickness = 2;
             ScrollBarImageColor3 = Library.OutlineColor;
             ZIndex = 2;
             Parent = TabFrame;
@@ -3294,7 +3337,7 @@ function Library:CreateWindow(...)
         for _, Side in next, { LeftSide, RightSide } do
             Library:AddToRegistry(Side, { ScrollBarImageColor3 = 'OutlineColor'; });
             Side:WaitForChild('UIListLayout'):GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y);
+                Side.CanvasSize = UDim2.fromOffset(0, Side.UIListLayout.AbsoluteContentSize.Y + 8);
             end);
         end;
 
@@ -3366,7 +3409,7 @@ function Library:CreateWindow(...)
             local BoxOuter = Library:Create('Frame', {
                 BackgroundColor3 = Library.BackgroundColor;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 0, 507 + 2);
+                Size = UDim2.new(1, -2, 0, 507 + 2);
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
@@ -3444,7 +3487,7 @@ function Library:CreateWindow(...)
                     end;
                 end;
 
-                BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
+                BoxOuter.Size = UDim2.new(1, -2, 0, 20 + Size + 2 + 2);
             end;
 
             Groupbox.Container = Container;
@@ -3474,7 +3517,7 @@ function Library:CreateWindow(...)
             local BoxOuter = Library:Create('Frame', {
                 BackgroundColor3 = Library.BackgroundColor;
                 BorderSizePixel = 0;
-                Size = UDim2.new(1, 0, 0, 0);
+                Size = UDim2.new(1, -2, 0, 0);
                 ZIndex = 2;
                 Parent = Info.Side == 1 and LeftSide or RightSide;
             });
@@ -3652,7 +3695,7 @@ function Library:CreateWindow(...)
                         end;
                     end;
 
-                    BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
+                    BoxOuter.Size = UDim2.new(1, -2, 0, 20 + Size + 2 + 2);
                 end;
 
                 Button.MouseEnter:Connect(function()
@@ -3733,11 +3776,68 @@ function Library:CreateWindow(...)
     local Toggled = false;
     local Fading = false;
     local MouseIconWasEnabled = nil;
+    local Cursor;
+    local CursorOutline;
+    local CursorConnection;
 
-    ScreenGui.Destroying:Connect(function()
+    local function StopCursor()
+        if CursorConnection then
+            CursorConnection:Disconnect();
+            CursorConnection = nil;
+        end;
+        if Cursor then
+            Cursor:Remove();
+            Cursor = nil;
+        end;
+        if CursorOutline then
+            CursorOutline:Remove();
+            CursorOutline = nil;
+        end;
         if MouseIconWasEnabled ~= nil then
             InputService.MouseIconEnabled = MouseIconWasEnabled;
+            MouseIconWasEnabled = nil;
         end;
+    end;
+
+    local function StartCursor()
+        MouseIconWasEnabled = InputService.MouseIconEnabled;
+        local Created = pcall(function()
+            Cursor = Drawing.new('Triangle');
+            CursorOutline = Drawing.new('Triangle');
+        end);
+        if not Created then
+            if Cursor then Cursor:Remove(); Cursor = nil; end;
+            if CursorOutline then CursorOutline:Remove(); CursorOutline = nil; end;
+            InputService.MouseIconEnabled = true;
+            return;
+        end;
+
+        Cursor.Thickness = 1;
+        Cursor.Filled = true;
+        Cursor.Visible = true;
+        CursorOutline.Thickness = 1;
+        CursorOutline.Filled = false;
+        CursorOutline.Color = Color3.new(0, 0, 0);
+        CursorOutline.Visible = true;
+
+        local function UpdateCursor()
+            local MousePosition = Pointer() + Library.CursorOffset;
+            Cursor.Color = Library.AccentColor;
+            Cursor.PointA = MousePosition;
+            Cursor.PointB = MousePosition + Vector2.new(16, 6);
+            Cursor.PointC = MousePosition + Vector2.new(6, 16);
+            CursorOutline.PointA = Cursor.PointA;
+            CursorOutline.PointB = Cursor.PointB;
+            CursorOutline.PointC = Cursor.PointC;
+            InputService.MouseIconEnabled = false;
+        end;
+
+        UpdateCursor();
+        CursorConnection = RenderStepped:Connect(UpdateCursor);
+    end;
+
+    ScreenGui.Destroying:Connect(function()
+        StopCursor();
     end);
 
     function Library:Toggle()
@@ -3752,11 +3852,9 @@ function Library:CreateWindow(...)
 
         local Opening = Toggled;
         if Opening then
-            MouseIconWasEnabled = InputService.MouseIconEnabled;
-            InputService.MouseIconEnabled = true;
-        elseif MouseIconWasEnabled ~= nil then
-            InputService.MouseIconEnabled = MouseIconWasEnabled;
-            MouseIconWasEnabled = nil;
+            StartCursor();
+        else
+            StopCursor();
         end;
 
         local RestPosition = Outer.Position;
@@ -3838,7 +3936,7 @@ function Library:CreateWindow(...)
         PositionTween:Play();
     end
 
-    CloseButton.MouseButton1Click:Connect(function()
+    CloseButton.Activated:Connect(function()
         if Toggled and not Fading then
             Library:Toggle();
         end;
