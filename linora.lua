@@ -164,23 +164,24 @@ function Library:CreateLabel(Properties, IsHud)
     return Library:Create(_Instance, Properties);
 end;
 
-function Library:MakeDraggable(Instance, Cutoff)
+function Library:MakeDraggable(Frame, Cutoff)
     local BarH = (type(Cutoff) == 'number' and Cutoff) or 30;
 
-    local Catcher = Instance:FindFirstChild('_DragCatcher');
+    local Catcher = Frame:FindFirstChild('_DragCatcher');
     if not Catcher then
-        Catcher = Instance.new('TextButton');
-        Catcher.Name = '_DragCatcher';
-        Catcher.Text = '';
-        Catcher.AutoButtonColor = false;
-        Catcher.BackgroundTransparency = 1;
-        Catcher.BorderSizePixel = 0;
-        Catcher.Active = true;
-        Catcher.Selectable = false;
-        Catcher.ZIndex = 250;
-        Catcher.Size = UDim2.new(1, 0, 0, BarH);
-        Catcher.Position = UDim2.fromOffset(0, 0);
-        Catcher.Parent = Instance;
+        Catcher = Library:Create('TextButton', {
+            Name = '_DragCatcher';
+            Text = '';
+            AutoButtonColor = false;
+            BackgroundTransparency = 1;
+            BorderSizePixel = 0;
+            Active = true;
+            Selectable = false;
+            ZIndex = 250;
+            Size = UDim2.new(1, 0, 0, BarH);
+            Position = UDim2.fromOffset(0, 0);
+            Parent = Frame;
+        });
     end;
 
     local Dragging = false;
@@ -194,15 +195,15 @@ function Library:MakeDraggable(Instance, Cutoff)
             return;
         end;
 
-        if Instance.AnchorPoint ~= Vector2.zero then
-            local Abs = Instance.AbsolutePosition;
-            Instance.AnchorPoint = Vector2.zero;
-            Instance.Position = UDim2.fromOffset(Abs.X, Abs.Y);
+        if Frame.AnchorPoint ~= Vector2.zero then
+            local Abs = Frame.AbsolutePosition;
+            Frame.AnchorPoint = Vector2.zero;
+            Frame.Position = UDim2.fromOffset(Abs.X, Abs.Y);
         end;
 
         Dragging = true;
         DragStart = Input.Position;
-        StartPos = Instance.Position;
+        StartPos = Frame.Position;
     end);
 
     Library:GiveSignal(InputService.InputEnded:Connect(function(Input)
@@ -224,7 +225,7 @@ function Library:MakeDraggable(Instance, Cutoff)
         end;
 
         local Delta = Input.Position - DragStart;
-        Instance.Position = UDim2.new(
+        Frame.Position = UDim2.new(
             StartPos.X.Scale,
             StartPos.X.Offset + Delta.X,
             StartPos.Y.Scale,
