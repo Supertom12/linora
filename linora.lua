@@ -3775,11 +3775,14 @@ function Library:CreateWindow(...)
     local Toggled = false;
     local Fading = false;
     local MouseIconWasEnabled = nil;
+    local PreviousMouseIcon = nil;
 
     local function RestoreMouseIcon()
         if MouseIconWasEnabled ~= nil then
+            InputService.MouseIcon = PreviousMouseIcon;
             InputService.MouseIconEnabled = MouseIconWasEnabled;
             MouseIconWasEnabled = nil;
+            PreviousMouseIcon = nil;
         end;
     end;
 
@@ -3800,6 +3803,8 @@ function Library:CreateWindow(...)
         local Opening = Toggled;
         if Opening then
             MouseIconWasEnabled = InputService.MouseIconEnabled;
+            PreviousMouseIcon = InputService.MouseIcon;
+            InputService.MouseIcon = '';
             InputService.MouseIconEnabled = true;
         else
             RestoreMouseIcon();
